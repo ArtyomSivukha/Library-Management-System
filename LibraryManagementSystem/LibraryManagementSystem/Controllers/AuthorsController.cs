@@ -1,4 +1,7 @@
-﻿namespace LibraryManagementSystem.Controllers;
+﻿using LibraryManagementSystem.Models;
+using LibraryManagementSystem.Services;
+
+namespace LibraryManagementSystem.Controllers;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,7 +24,7 @@ public class AuthorsController : ControllerBase
     }
     
     [HttpGet("{id:long}")]
-    public IActionResult GetById(int id)
+    public IActionResult GetById(long id)
     {
         var author = _authorService.GetAuthorById(id);
         if (author is null) 
@@ -30,6 +33,30 @@ public class AuthorsController : ControllerBase
         }
         return Ok(author);
     }
+
+    [HttpPost("createAuthor")]
+    public IActionResult CreateAuthors(Author author)
+    {
+        if (ModelState.IsValid)
+        {
+            var createdAuthor = _authorService.CreateAuthor(author);
+            return Ok(createdAuthor);
+        }
+
+        return BadRequest();
+    }
+
+    [HttpPut("{id:long}")]
+    public IActionResult UpdateAuthor(Author author, long id)
+    {
+        if (id == author.Id)
+        {
+            _authorService.UpdateAuthor(author);
+            return Ok();
+        }
+        return BadRequest();
+    }
+
 
     [HttpDelete("{id:long}")]
     public IActionResult Delete(long id)

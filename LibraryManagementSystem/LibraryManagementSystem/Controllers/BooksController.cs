@@ -1,4 +1,5 @@
-﻿using LibraryManagementSystem.Services;
+﻿using LibraryManagementSystem.Models;
+using LibraryManagementSystem.Services;
 
 namespace LibraryManagementSystem.Controllers;
 
@@ -23,7 +24,7 @@ public class BooksController : ControllerBase
     }
 
     [HttpGet("{id:long}")]
-    public IActionResult GetById(int id)
+    public IActionResult GetById(long id)
     {
         var book = _bookService.GetBookById(id);
         if (book is null)
@@ -31,6 +32,28 @@ public class BooksController : ControllerBase
             return NotFound();
         }
         return Ok(book);
+    }
+
+    [HttpPost("createBook")]
+    public IActionResult CreateBook(Book book)
+    {
+        if (ModelState.IsValid)
+        {
+            var createdBook = _bookService.CreateBook(book);
+            return Ok(createdBook);
+        }
+        return BadRequest();
+    }
+
+    [HttpPut("{id:long}")]
+    public IActionResult UpdateBook(Book book, long id)
+    {
+        if (id == book.Id)
+        {
+            _bookService.UpdateBook(book);
+            return Ok();
+        }
+        return BadRequest();
     }
 
     [HttpDelete("{id:long}")]
