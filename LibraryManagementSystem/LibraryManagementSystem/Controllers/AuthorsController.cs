@@ -20,12 +20,21 @@ public class AuthorsController : ControllerBase
         return Ok(authors);
     }
     
-    [HttpGet("{id}")]
+    [HttpGet("{id:long}")]
     public IActionResult GetById(int id)
     {
         var author = _authorService.GetAuthorById(id);
-        if (author == null)
+        if (author is null) 
+        {
             return NotFound();
+        }
         return Ok(author);
+    }
+
+    [HttpDelete("{id:long}")]
+    public IActionResult Delete(long id)
+    {
+        _authorService.DeleteAuthor(id);
+        return Ok();
     }
 }

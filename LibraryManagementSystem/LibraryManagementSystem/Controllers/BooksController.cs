@@ -14,20 +14,29 @@ public class BooksController : ControllerBase
     {
         _bookService = bookService;
     }
-    
+
     [HttpGet]
     public IActionResult GetAll()
     {
         var books = _bookService.GetAllBooks();
         return Ok(books);
     }
-    
-    [HttpGet("{id}")]
+
+    [HttpGet("{id:long}")]
     public IActionResult GetById(int id)
     {
         var book = _bookService.GetBookById(id);
-        if (book == null)
+        if (book is null)
+        {
             return NotFound();
+        }
         return Ok(book);
+    }
+
+    [HttpDelete("{id:long}")]
+    public IActionResult Delete(long id)
+    {
+        _bookService.DeleteBook(id);
+        return Ok();
     }
 }
