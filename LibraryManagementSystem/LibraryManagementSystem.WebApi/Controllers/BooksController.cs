@@ -1,7 +1,7 @@
-﻿using LibraryManagementSystem.Models;
-using LibraryManagementSystem.Services;
+﻿using LibraryManagementSystem.Services.Local;
+using LibraryManagementSystem.Services.Models;
 
-namespace LibraryManagementSystem.Controllers;
+namespace LibraryManagementSystem.WebApi.Controllers;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,14 +27,10 @@ public class BooksController : ControllerBase
     public IActionResult GetById(long id)
     {
         var book = _bookService.GetBookById(id);
-        if (book is null)
-        {
-            return NotFound();
-        }
-        return Ok(book);
+        return book is null ? NotFound() : Ok(book);
     }
 
-    [HttpPost("createBook")]
+    [HttpPost]
     public IActionResult CreateBook(Book book)
     {
         if (ModelState.IsValid)
@@ -50,8 +46,15 @@ public class BooksController : ControllerBase
     {
         if (id == book.Id)
         {
-            _bookService.UpdateBook(book);
-            return Ok();
+            try
+            {
+                _bookService.UpdateBook(book);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
         return BadRequest();
     }
@@ -59,7 +62,15 @@ public class BooksController : ControllerBase
     [HttpDelete("{id:long}")]
     public IActionResult Delete(long id)
     {
-        _bookService.DeleteBook(id);
-        return Ok();
+        try
+        {
+            _bookService.DeleteBook(id);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+       
     }
 }

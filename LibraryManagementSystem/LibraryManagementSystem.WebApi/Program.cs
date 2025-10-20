@@ -1,5 +1,4 @@
-using LibraryManagementSystem.Controllers;
-using LibraryManagementSystem.Services;
+using LibraryManagementSystem.Services.Local;
 
 var builder = WebApplication.CreateBuilder(args);
 

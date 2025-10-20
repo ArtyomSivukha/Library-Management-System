@@ -1,7 +1,7 @@
-﻿using LibraryManagementSystem.Models;
-using LibraryManagementSystem.Services;
+﻿using LibraryManagementSystem.Services.Local;
+using LibraryManagementSystem.Services.Models;
 
-namespace LibraryManagementSystem.Controllers;
+namespace LibraryManagementSystem.WebApi.Controllers;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -34,7 +34,7 @@ public class AuthorsController : ControllerBase
         return Ok(author);
     }
 
-    [HttpPost("createAuthor")]
+    [HttpPost]
     public IActionResult CreateAuthors(Author author)
     {
         if (ModelState.IsValid)
@@ -57,11 +57,17 @@ public class AuthorsController : ControllerBase
         return BadRequest();
     }
 
-
     [HttpDelete("{id:long}")]
     public IActionResult Delete(long id)
     {
-        _authorService.DeleteAuthor(id);
-        return Ok();
+        try
+        {
+            _authorService.DeleteAuthor(id);
+            return Ok();
+        }
+        catch (ArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 }

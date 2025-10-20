@@ -1,6 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryManagementSystem", "LibraryManagementSystem\LibraryManagementSystem.csproj", "{4A70D325-2598-492C-8903-4E87091950DE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryManagementSystem.WebApi", "LibraryManagementSystem.WebApi\LibraryManagementSystem.WebApi.csproj", "{4A70D325-2598-492C-8903-4E87091950DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryManagementSystem.Services", "LibraryManagementSystem.Services\LibraryManagementSystem.Services.csproj", "{BC08CF97-E078-422A-83AC-7933520B26FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryManagementSystem.Services.Local", "LibraryManagementSystem.Services.Local\LibraryManagementSystem.Services.Local.csproj", "{59D65833-5C88-4CBE-B9C2-A29B688F1B52}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +16,13 @@ Global
 		{4A70D325-2598-492C-8903-4E87091950DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A70D325-2598-492C-8903-4E87091950DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A70D325-2598-492C-8903-4E87091950DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC08CF97-E078-422A-83AC-7933520B26FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC08CF97-E078-422A-83AC-7933520B26FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC08CF97-E078-422A-83AC-7933520B26FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC08CF97-E078-422A-83AC-7933520B26FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59D65833-5C88-4CBE-B9C2-A29B688F1B52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59D65833-5C88-4CBE-B9C2-A29B688F1B52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59D65833-5C88-4CBE-B9C2-A29B688F1B52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59D65833-5C88-4CBE-B9C2-A29B688F1B52}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
