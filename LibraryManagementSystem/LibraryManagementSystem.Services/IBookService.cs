@@ -4,9 +4,9 @@ namespace LibraryManagementSystem.Services;
 
 public interface IBookService
 {
-    IEnumerable<Book> GetAllBooks();
-    Book? GetBookById(long id);
-    void DeleteBook(long id);
-    Book CreateBook(Book book);
-    void UpdateBook(Book book);
+    Task<IEnumerable<Book>> GetAllBooksAsync();
+    Task<Book?> GetBookByIdAsync(long id);
+    Task<Book> CreateBookAsync(Book book);
+    Task UpdateBookAsync(Book book);
+    Task DeleteBookAsync(long id);
 }

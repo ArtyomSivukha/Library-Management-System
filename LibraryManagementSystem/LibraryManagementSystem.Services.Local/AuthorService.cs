@@ -13,31 +13,31 @@ public class AuthorService : IAuthorService
         return ++_idAuthor;
     }
 
-    public IEnumerable<Author> GetAllAuthors() => Authors;
-    public Author? GetAuthorById(long id) => Authors.FirstOrDefault(p => p.Id == id);
+    public Task<IEnumerable<Author>> GetAllAuthorsAsync() => Task.FromResult<IEnumerable<Author>>(Authors);
+    public Task<Author?> GetAuthorByIdAsync(long id) => Task.FromResult(Authors.FirstOrDefault(p => p.Id == id));
 
-    public Author CreateAuthor(Author author)
+    public Task<Author> CreateAuthorAsync(Author author)
     {
         author.Id = GetNextAuthorId();
         Authors.Add(author);
-        return author;
+        return Task.FromResult(author);
     }
 
-    public void UpdateAuthor(Author author)
+    public async Task UpdateAuthorAsync(Author author)
     {
-        var updatedAuthor = GetAuthorById(author.Id);
+        var updatedAuthor = await GetAuthorByIdAsync(author.Id);
         if (updatedAuthor is null)
         {
-            throw new ArgumentException("Author could not be found.");
+            throw new ArgumentException($"Author with ID {author.Id} not found");
         }
 
         updatedAuthor.Name = author.Name;
         updatedAuthor.DateOfBirth = author.DateOfBirth;
     }
 
-    public void DeleteAuthor(long id)
+    public async Task DeleteAuthorAsync(long id)
     {
-        var deleteAuthor = GetAuthorById(id);
+        var deleteAuthor = await GetAuthorByIdAsync(id);
         if (deleteAuthor is null)
         {
             throw new ArgumentException("Author could not be found.");

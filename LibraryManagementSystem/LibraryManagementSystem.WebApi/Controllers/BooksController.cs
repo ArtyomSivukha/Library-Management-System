@@ -17,60 +17,62 @@ public class BooksController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult GetAll()
+    public async Task<IActionResult> GetAllBooksAsync()
     {
-        var books = _bookService.GetAllBooks();
+        var books = await _bookService.GetAllBooksAsync();
         return Ok(books);
     }
 
     [HttpGet("{id:long}")]
-    public IActionResult GetById(long id)
+    public async Task<IActionResult> GetBookByIdAsync(long id)
     {
-        var book = _bookService.GetBookById(id);
+        var book = await _bookService.GetBookByIdAsync(id);
         return book is null ? NotFound() : Ok(book);
     }
 
     [HttpPost]
-    public IActionResult CreateBook(Book book)
-    {
-        if (ModelState.IsValid)
-        {
-            var createdBook = _bookService.CreateBook(book);
-            return Ok(createdBook);
-        }
-        return BadRequest();
-    }
-
-    [HttpPut("{id:long}")]
-    public IActionResult UpdateBook(Book book, long id)
-    {
-        if (id == book.Id)
-        {
-            try
-            {
-                _bookService.UpdateBook(book);
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-        return BadRequest();
-    }
-
-    [HttpDelete("{id:long}")]
-    public IActionResult Delete(long id)
+    public async Task<IActionResult> CreateBookAsync(Book book)
     {
         try
         {
-            _bookService.DeleteBook(id);
-            return Ok();
+            var createdBook = await _bookService.CreateBookAsync(book);
+            return Ok(createdBook);
         }
-        catch (Exception e)
+        catch (ArgumentException e)
         {
             return BadRequest(e.Message);
         }
-       
+    }
+
+    [HttpPut("{id:long}")]
+    public async Task<IActionResult> UpdateBookAsync(Book book, long id)
+    {
+        if (id != book.Id)
+        {
+            return BadRequest("Route ID and book ID do not match");
+        }
+        try
+        {
+            await _bookService.UpdateBookAsync(book);
+            return Ok();
+        }
+        catch (ArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpDelete("{id:long}")]
+    public async Task<IActionResult> DeleteBookAsync(long id)
+    {
+        try
+        {
+            await _bookService.DeleteBookAsync(id);
+            return Ok();
+        }
+        catch (ArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 }

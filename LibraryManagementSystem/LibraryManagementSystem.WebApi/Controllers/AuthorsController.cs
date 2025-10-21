@@ -15,54 +15,52 @@ public class AuthorsController : ControllerBase
     {
         _authorService = authorService;
     }
-    
+
     [HttpGet]
-    public IActionResult GetAll()
+    public async Task<IActionResult> GetAllAuthorsAsync()
     {
-        var authors = _authorService.GetAllAuthors();
+        var authors = await _authorService.GetAllAuthorsAsync();
         return Ok(authors);
     }
-    
+
     [HttpGet("{id:long}")]
-    public IActionResult GetById(long id)
+    public async Task<IActionResult> GetAuthorByIdAsync(long id)
     {
-        var author = _authorService.GetAuthorById(id);
-        if (author is null) 
-        {
-            return NotFound();
-        }
-        return Ok(author);
+        var author = await _authorService.GetAuthorByIdAsync(id);
+        return author == null ? NotFound() : Ok(author);
     }
 
     [HttpPost]
-    public IActionResult CreateAuthors(Author author)
+    public async Task<IActionResult> CreateAuthorsAsync(Author author)
     {
-        if (ModelState.IsValid)
-        {
-            var createdAuthor = _authorService.CreateAuthor(author);
-            return Ok(createdAuthor);
-        }
-
-        return BadRequest();
+        var createdAuthor = await _authorService.CreateAuthorAsync(author);
+        return Ok(createdAuthor);
     }
 
     [HttpPut("{id:long}")]
-    public IActionResult UpdateAuthor(Author author, long id)
+    public async Task<IActionResult> UpdateAuthorAsync(Author author, long id)
     {
-        if (id == author.Id)
+        if (id != author.Id)
         {
-            _authorService.UpdateAuthor(author);
+            return BadRequest("Route ID and author ID do not match");
+        }
+        try
+        {
+            await _authorService.UpdateAuthorAsync(author);
             return Ok();
         }
-        return BadRequest();
+        catch (ArgumentException e)
+        {
+            return BadRequest(e.Message);            
+        }
     }
 
     [HttpDelete("{id:long}")]
-    public IActionResult Delete(long id)
+    public async Task<IActionResult> DeleteAuthorAsync(long id)
     {
         try
         {
-            _authorService.DeleteAuthor(id);
+            await _authorService.DeleteAuthorAsync(id);
             return Ok();
         }
         catch (ArgumentException e)

@@ -19,12 +19,12 @@ public class BookService : IBookService
         return ++_bookId;
     }
 
-    public IEnumerable<Book> GetAllBooks() => Books;
-    public Book? GetBookById(long id) => Books.FirstOrDefault(p => p.Id == id);
+    public Task<IEnumerable<Book>> GetAllBooksAsync() => Task.FromResult<IEnumerable<Book>>(Books);
+    public Task<Book?> GetBookByIdAsync(long id) => Task.FromResult(Books.FirstOrDefault(p => p.Id == id));
     
-    public Book CreateBook(Book book)
+    public async Task<Book> CreateBookAsync(Book book)
     {
-        if (_authorService.GetAuthorById(book.AuthorId) is null)
+        if (await _authorService.GetAuthorByIdAsync(book.AuthorId) is null)
         {
             throw new ArgumentException($"Author with id {book.AuthorId} does not exist");
         }
@@ -34,14 +34,14 @@ public class BookService : IBookService
         return book;
     }
 
-    public void UpdateBook(Book book)
+    public async Task UpdateBookAsync(Book book)
     {
-        if (_authorService.GetAuthorById(book.AuthorId) is null)
+        if (await _authorService.GetAuthorByIdAsync(book.AuthorId) is null)
         {
             throw new ArgumentException($"Author with id {book.AuthorId} does not exist");
         }
 
-        var bookToUpdate = GetBookById(book.Id);
+        var bookToUpdate = await GetBookByIdAsync(book.Id);
         if (bookToUpdate is null)
         {
             throw new ArgumentException($"Book with ID {book.Id} not found");
@@ -52,9 +52,9 @@ public class BookService : IBookService
         bookToUpdate.AuthorId = book.AuthorId;
     }
     
-    public void DeleteBook(long id)
+    public async Task DeleteBookAsync(long id)
     {
-        var bookToDelete = GetBookById(id);
+        var bookToDelete = await GetBookByIdAsync(id);
         if (bookToDelete is null)
         {
             throw new ArgumentException("Book not found");
