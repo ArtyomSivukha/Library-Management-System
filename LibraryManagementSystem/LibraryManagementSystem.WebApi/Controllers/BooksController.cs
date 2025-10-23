@@ -1,4 +1,5 @@
-﻿using LibraryManagementSystem.Services.Local;
+﻿using LibraryManagementSystem.Services;
+using LibraryManagementSystem.Services.Local;
 using LibraryManagementSystem.Services.Models;
 
 namespace LibraryManagementSystem.WebApi.Controllers;
@@ -9,9 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 [Route("api/[controller]")]
 public class BooksController : ControllerBase
 {
-    private readonly BookService _bookService;
+    private readonly IBookService _bookService;
 
-    public BooksController(BookService bookService)
+    public BooksController(IBookService bookService)
     {
         _bookService = bookService;
     }

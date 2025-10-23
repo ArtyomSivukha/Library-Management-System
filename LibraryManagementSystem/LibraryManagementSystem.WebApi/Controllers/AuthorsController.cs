@@ -1,4 +1,5 @@
-﻿using LibraryManagementSystem.Services.Local;
+﻿using LibraryManagementSystem.Services;
+using LibraryManagementSystem.Services.Local;
 using LibraryManagementSystem.Services.Models;
 
 namespace LibraryManagementSystem.WebApi.Controllers;
@@ -9,9 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 [Route("api/[controller]")]
 public class AuthorsController : ControllerBase
 {
-    private readonly AuthorService _authorService;
+    private readonly IAuthorService _authorService;
 
-    public AuthorsController(AuthorService authorService)
+    public AuthorsController(IAuthorService authorService)
     {
         _authorService = authorService;
     }

@@ -7,9 +7,9 @@ public class BookService : IBookService
     private static readonly List<Book> Books = new();
     private static long _bookId;
 
-    private readonly AuthorService _authorService;
+    private readonly IAuthorService _authorService;
 
-    public BookService(AuthorService authorService)
+    public BookService(IAuthorService authorService)
     {
         _authorService = authorService;
     }

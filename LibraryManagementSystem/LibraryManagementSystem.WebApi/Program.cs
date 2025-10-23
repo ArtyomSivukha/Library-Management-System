@@ -1,10 +1,11 @@
+using LibraryManagementSystem.Services;
 using LibraryManagementSystem.Services.Local;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-builder.Services.AddScoped<AuthorService>();
-builder.Services.AddScoped<BookService>();
+builder.Services.AddScoped<IAuthorService,AuthorService>();
+builder.Services.AddScoped<IBookService, BookService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
