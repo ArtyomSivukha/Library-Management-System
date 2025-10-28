@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryManagementSystem.Services.EntityFramework.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    [Migration("20251028070938_Initial")]
+    [Migration("20251028174650_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -53,7 +53,7 @@ namespace LibraryManagementSystem.Services.EntityFramework.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<long?>("AuthorId")
+                    b.Property<long>("AuthorId")
                         .HasColumnType("bigint");
 
                     b.Property<int>("PublisherYear")
@@ -74,7 +74,9 @@ namespace LibraryManagementSystem.Services.EntityFramework.Migrations
                 {
                     b.HasOne("LibraryManagementSystem.Services.EntityFramework.Entities.Author", "Author")
                         .WithMany("Books")
-                        .HasForeignKey("AuthorId");
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Author");
                 });

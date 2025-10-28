@@ -39,7 +39,7 @@ namespace LibraryManagementSystem.Services.EntityFramework.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Authors", (string)null);
+                    b.ToTable("Authors");
                 });
 
             modelBuilder.Entity("LibraryManagementSystem.Services.EntityFramework.Entities.Book", b =>
@@ -50,7 +50,7 @@ namespace LibraryManagementSystem.Services.EntityFramework.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<long?>("AuthorId")
+                    b.Property<long>("AuthorId")
                         .HasColumnType("bigint");
 
                     b.Property<int>("PublisherYear")
@@ -64,14 +64,16 @@ namespace LibraryManagementSystem.Services.EntityFramework.Migrations
 
                     b.HasIndex("AuthorId");
 
-                    b.ToTable("Books", (string)null);
+                    b.ToTable("Books");
                 });
 
             modelBuilder.Entity("LibraryManagementSystem.Services.EntityFramework.Entities.Book", b =>
                 {
                     b.HasOne("LibraryManagementSystem.Services.EntityFramework.Entities.Author", "Author")
                         .WithMany("Books")
-                        .HasForeignKey("AuthorId");
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Author");
                 });

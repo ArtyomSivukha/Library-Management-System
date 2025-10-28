@@ -33,7 +33,7 @@ namespace LibraryManagementSystem.Services.EntityFramework.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PublisherYear = table.Column<int>(type: "int", nullable: false),
-                    AuthorId = table.Column<long>(type: "bigint", nullable: true)
+                    AuthorId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -42,7 +42,8 @@ namespace LibraryManagementSystem.Services.EntityFramework.Migrations
                         name: "FK_Books_Authors_AuthorId",
                         column: x => x.AuthorId,
                         principalTable: "Authors",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

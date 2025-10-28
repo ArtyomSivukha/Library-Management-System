@@ -20,15 +20,15 @@ CREATE TABLE [Books] (
     [Id] bigint NOT NULL IDENTITY,
     [Title] nvarchar(max) NOT NULL,
     [PublisherYear] int NOT NULL,
-    [AuthorId] bigint NULL,
+    [AuthorId] bigint NOT NULL,
     CONSTRAINT [PK_Books] PRIMARY KEY ([Id]),
-    CONSTRAINT [FK_Books_Authors_AuthorId] FOREIGN KEY ([AuthorId]) REFERENCES [Authors] ([Id])
+    CONSTRAINT [FK_Books_Authors_AuthorId] FOREIGN KEY ([AuthorId]) REFERENCES [Authors] ([Id]) ON DELETE CASCADE
 );
 
 CREATE INDEX [IX_Books_AuthorId] ON [Books] ([AuthorId]);
 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20251028062937_InitialLibraryDB', N'9.0.10');
+VALUES (N'20251028174650_Initial', N'9.0.10');
 
 COMMIT;
 GO

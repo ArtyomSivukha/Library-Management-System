@@ -1,7 +1,6 @@
 ﻿using System.Linq.Expressions;
 using LibraryManagementSystem.Services.EntityFramework.Entities;
-using ServiceEntities = LibraryManagementSystem.Services.Models;
-
+using Microsoft.EntityFrameworkCore;
 
 namespace LibraryManagementSystem.Services.EntityFramework;
 
@@ -14,18 +13,18 @@ public class AuthorService : IAuthorService
         _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<ServiceEntities.Author>> GetAllAuthorsAsync()
+    public async Task<IEnumerable<Models.Author>> GetAllAuthorsAsync()
     {
-        return _dbContext.Authors.Select(FromEntity());
+        return await _dbContext.Authors.Select(user => MapUserToServiceEntity(user)).ToArrayAsync();
     }
 
-    public async Task<ServiceEntities.Author?> GetAuthorByIdAsync(long id)
+    public async Task<Models.Author?> GetAuthorByIdAsync(long id)
     {
        var author = await _dbContext.Authors.FindAsync(id);
        return author is null ? null : MapUserToServiceEntity(author);
     }
 
-    public async Task<ServiceEntities.Author> CreateAuthorAsync(ServiceEntities.Author author)
+    public async Task<Models.Author> CreateAuthorAsync(Models.Author author)
     {
         if (author is null)
         {
@@ -33,14 +32,14 @@ public class AuthorService : IAuthorService
         }
 
         var newAuthor = ToEntity(author);
-        await _dbContext.Authors.AddAsync(newAuthor);
-        _dbContext.SaveChanges();
+         _dbContext.Authors.Add(newAuthor);
+         await _dbContext.SaveChangesAsync();
         
         author.Id = newAuthor.Id;
         return author;
     }
 
-    public Task UpdateAuthorAsync(ServiceEntities.Author author)
+    public Task UpdateAuthorAsync(Models.Author author)
     {
         throw new NotImplementedException();
     }
@@ -58,18 +57,16 @@ public class AuthorService : IAuthorService
         await _dbContext.SaveChangesAsync();
     }
     
-    private static Author ToEntity(ServiceEntities.Author author) =>
-        new Author
+    private static Author ToEntity(Models.Author author) =>
+        new()
         {
             Id = author.Id,
             Name = author.Name,
-            DateOfBirth = author.DateOfBirth,
+            DateOfBirth = author.DateOfBirth
         };
 
-    private static Expression<Func<Author, ServiceEntities.Author>> FromEntity() => user => MapUserToServiceEntity(user);
-
-    private static ServiceEntities.Author MapUserToServiceEntity(Author author) =>
-        new ServiceEntities.Author
+    private static Models.Author MapUserToServiceEntity(Author author) =>
+        new()
         {
             Id = author.Id,
             Name = author.Name,

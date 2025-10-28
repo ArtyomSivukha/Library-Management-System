@@ -5,8 +5,6 @@ namespace LibraryManagementSystem.Services.EntityFramework.Entities;
 
 public class LibraryDbContext : DbContext
 {
-    // private readonly IConfiguration _appConfig;
-    //
     public LibraryDbContext(DbContextOptions<LibraryDbContext> options) 
         : base(options)
     {
