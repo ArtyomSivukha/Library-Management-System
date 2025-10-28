@@ -1,31 +1,33 @@
-﻿using LibraryManagementSystem.Services.Models;
+﻿using LibraryManagementSystem.Services.EntityFramework.Entities;
+using ServiceEntities = LibraryManagementSystem.Services.Models;
 
 namespace LibraryManagementSystem.Services.EntityFramework;
-
 public class BookService : IBookService
 {
-    public Task<IEnumerable<Book>> GetAllBooksAsync()
-    {
-        throw new NotImplementedException();
-    }
+   private readonly LibraryDbContext _dbContext;
 
-    public Task<Book?> GetBookByIdAsync(long id)
-    {
-        throw new NotImplementedException();
-    }
+   public Task<IEnumerable<ServiceEntities.Book>> GetAllBooksAsync()
+   {
+      throw new NotImplementedException();
+   }
 
-    public Task<Book> CreateBookAsync(Book book)
-    {
-        throw new NotImplementedException();
-    }
+   public Task<ServiceEntities.Book?> GetBookByIdAsync(long id)
+   {
+      throw new NotImplementedException();
+   }
 
-    public Task UpdateBookAsync(Book book)
-    {
-        throw new NotImplementedException();
-    }
+   public Task<ServiceEntities.Book> CreateBookAsync(ServiceEntities.Book book)
+   {
+      throw new NotImplementedException();
+   }
 
-    public Task DeleteBookAsync(long id)
-    {
-        throw new NotImplementedException();
-    }
+   public Task UpdateBookAsync(ServiceEntities.Book book)
+   {
+      throw new NotImplementedException();
+   }
+
+   public Task DeleteBookAsync(long id)
+   {
+      throw new NotImplementedException();
+   }
 }
