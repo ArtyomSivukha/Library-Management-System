@@ -1,9 +1,8 @@
-﻿using System.Linq.Expressions;
-using LibraryManagementSystem.Services.EntityFramework.Entities;
+﻿using LibraryManagementSystem.Services.EntityFramework.Entities;
 using Microsoft.EntityFrameworkCore;
+using Book = LibraryManagementSystem.Services.Models.Book;
 
 namespace LibraryManagementSystem.Services.EntityFramework;
-
 public class AuthorService : IAuthorService
 {
     private readonly LibraryDbContext _dbContext;
@@ -15,13 +14,13 @@ public class AuthorService : IAuthorService
 
     public async Task<IEnumerable<Models.Author>> GetAllAuthorsAsync()
     {
-        return await _dbContext.Authors.Select(user => MapUserToServiceEntity(user)).ToArrayAsync();
+        return await _dbContext.Authors.Select(author => FromEntityToModel(author)).ToArrayAsync();
     }
 
     public async Task<Models.Author?> GetAuthorByIdAsync(long id)
     {
        var author = await _dbContext.Authors.FindAsync(id);
-       return author is null ? null : MapUserToServiceEntity(author);
+       return author is null ? null : FromEntityToModel(author);
     }
 
     public async Task<Models.Author> CreateAuthorAsync(Models.Author author)
@@ -39,12 +38,26 @@ public class AuthorService : IAuthorService
         return author;
     }
 
-    public Task UpdateAuthorAsync(Models.Author author)
+    public async Task UpdateAuthorAsync(Models.Author author)
     {
-        throw new NotImplementedException();
+        // var updateAuthor = await _dbContext.Authors.FirstOrDefaultAsync(a => a.Id == author.Id);
+        var updateAuthor = await _dbContext.Authors.FindAsync(author.Id);
+        if (updateAuthor is null)
+        {
+            throw new ArgumentNullException(nameof(updateAuthor), $"{nameof(updateAuthor)} is null");
+        }
+        updateAuthor.Name = author.Name;
+        updateAuthor.DateOfBirth = author.DateOfBirth;
+        try
+        {
+            await _dbContext.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException e)
+        {
+            throw new DbUpdateConcurrencyException(e.Message, e);
+        }  
+        
     }
-    
-
     public async Task DeleteAuthorAsync(long id)
     {
         var author = await _dbContext.Authors.FindAsync(id);
@@ -65,13 +78,14 @@ public class AuthorService : IAuthorService
             DateOfBirth = author.DateOfBirth
         };
 
-    private static Models.Author MapUserToServiceEntity(Author author) =>
+    private static Models.Author FromEntityToModel(Author author) =>
         new()
         {
             Id = author.Id,
             Name = author.Name,
             DateOfBirth = author.DateOfBirth,
         };
-    
-    
+
+
+
 }

@@ -1,33 +1,110 @@
 ﻿using LibraryManagementSystem.Services.EntityFramework.Entities;
-using ServiceEntities = LibraryManagementSystem.Services.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace LibraryManagementSystem.Services.EntityFramework;
 public class BookService : IBookService
 {
    private readonly LibraryDbContext _dbContext;
 
-   public Task<IEnumerable<ServiceEntities.Book>> GetAllBooksAsync()
+   public BookService(LibraryDbContext dbContext)
    {
-      throw new NotImplementedException();
+      _dbContext = dbContext;
    }
 
-   public Task<ServiceEntities.Book?> GetBookByIdAsync(long id)
+   public async Task<IEnumerable<Models.Book>> GetAllBooksAsync()
    {
-      throw new NotImplementedException();
+      return await _dbContext.Books.Include(book => book.Author).Select(book => FromEntityToModel(book)).ToArrayAsync();
    }
 
-   public Task<ServiceEntities.Book> CreateBookAsync(ServiceEntities.Book book)
+   public async Task<Models.Book?> GetBookByIdAsync(long id)
    {
-      throw new NotImplementedException();
+      var book = await _dbContext.Books.Include(b => b.Author).FirstOrDefaultAsync(b => b.Id == id);
+      return book is null ? null : FromEntityToModel(book);
    }
 
-   public Task UpdateBookAsync(ServiceEntities.Book book)
+   public async Task<Models.Book> CreateBookAsync(Models.Book book)
    {
-      throw new NotImplementedException();
+      if (book is null)
+      {
+         throw new ArgumentNullException(nameof(book), $"{nameof(book)} is null");
+      }
+      
+      var author = await _dbContext.Authors.FindAsync(book.AuthorId);
+      if (author is null)
+      {
+         throw new NullReferenceException($"Author with id {book.AuthorId} does not exist");
+      }
+
+      var newBook = ToEntity(book);
+      newBook.Author = author;
+      await _dbContext.Books.AddAsync(newBook);
+      await _dbContext.SaveChangesAsync();
+      
+      return book;
    }
 
-   public Task DeleteBookAsync(long id)
+   public async Task UpdateBookAsync(Models.Book book)
    {
-      throw new NotImplementedException();
+      if (book is null)
+      {
+         throw new ArgumentNullException(nameof(book), $"{nameof(book)} is null");
+      }
+
+      var bookToUpdate = await _dbContext.Books.FindAsync(book.Id);
+      
+      if (bookToUpdate is null)
+      {
+         throw new ArgumentNullException(nameof(bookToUpdate), $"{nameof(bookToUpdate)} is null");
+      }
+      
+      var author = await _dbContext.Authors.FindAsync(book.AuthorId);
+      if (author is null)
+      {
+         throw new NullReferenceException($"Author with id {book.AuthorId} does not exist");
+      }
+      
+      bookToUpdate.Title = book.Title;
+      bookToUpdate.PublisherYear = book.PublisherYear;
+      bookToUpdate.Author = author;
+
+      try
+      {
+         await _dbContext.SaveChangesAsync();
+      }
+      catch (DbUpdateConcurrencyException e)
+      {
+         throw new DbUpdateConcurrencyException(e.Message, e);
+      }
+      
    }
+
+   public async Task DeleteBookAsync(long id)
+   {
+      var deleteBook = await _dbContext.Books.FindAsync(id);
+      if (deleteBook is null)
+      {
+         throw new ArgumentNullException(nameof(deleteBook), $"{nameof(deleteBook)} is null");
+      }
+      
+      _dbContext.Books.Remove(deleteBook);
+      await _dbContext.SaveChangesAsync();
+   }
+
+   private static Book ToEntity(Models.Book book) =>
+      new()
+      {
+         Id = book.Id,
+         Title = book.Title,
+         PublisherYear = book.PublisherYear,
+         Author = new Author {Id = book.AuthorId}
+      };
+
+   private static Models.Book FromEntityToModel(Book book) =>
+      new()
+      {
+         Id = book.Id,
+         Title = book.Title,
+         PublisherYear = book.PublisherYear,
+         AuthorId = book.Author.Id
+      };
 }
