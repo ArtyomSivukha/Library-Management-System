@@ -13,12 +13,17 @@ public class BookService : IBookService
 
    public async Task<IEnumerable<Models.Book>> GetAllBooksAsync()
    {
-      return await _dbContext.Books.Include(book => book.Author).Select(book => FromEntityToModel(book)).ToArrayAsync();
+      return await _dbContext.Books
+         .Include(book => book.Author)
+         .Select(book => FromEntityToModel(book))
+         .ToArrayAsync();
    }
 
    public async Task<Models.Book?> GetBookByIdAsync(long id)
    {
-      var book = await _dbContext.Books.Include(b => b.Author).FirstOrDefaultAsync(b => b.Id == id);
+      var book = await _dbContext.Books
+         .Include(b => b.Author)
+         .FirstOrDefaultAsync(b => b.Id == id);
       return book is null ? null : FromEntityToModel(book);
    }
 
@@ -37,7 +42,7 @@ public class BookService : IBookService
 
       var newBook = ToEntity(book);
       newBook.Author = author;
-      await _dbContext.Books.AddAsync(newBook);
+      _dbContext.Books.Add(newBook);
       await _dbContext.SaveChangesAsync();
       
       return book;
@@ -66,16 +71,8 @@ public class BookService : IBookService
       bookToUpdate.Title = book.Title;
       bookToUpdate.PublisherYear = book.PublisherYear;
       bookToUpdate.Author = author;
-
-      try
-      {
-         await _dbContext.SaveChangesAsync();
-      }
-      catch (DbUpdateConcurrencyException e)
-      {
-         throw new DbUpdateConcurrencyException(e.Message, e);
-      }
       
+      await _dbContext.SaveChangesAsync();
    }
 
    public async Task DeleteBookAsync(long id)
@@ -95,8 +92,7 @@ public class BookService : IBookService
       {
          Id = book.Id,
          Title = book.Title,
-         PublisherYear = book.PublisherYear,
-         Author = new Author {Id = book.AuthorId}
+         PublisherYear = book.PublisherYear
       };
 
    private static Models.Book FromEntityToModel(Book book) =>

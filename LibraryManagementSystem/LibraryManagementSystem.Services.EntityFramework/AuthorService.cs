@@ -1,6 +1,5 @@
 ﻿using LibraryManagementSystem.Services.EntityFramework.Entities;
 using Microsoft.EntityFrameworkCore;
-using Book = LibraryManagementSystem.Services.Models.Book;
 
 namespace LibraryManagementSystem.Services.EntityFramework;
 public class AuthorService : IAuthorService
@@ -40,7 +39,6 @@ public class AuthorService : IAuthorService
 
     public async Task UpdateAuthorAsync(Models.Author author)
     {
-        // var updateAuthor = await _dbContext.Authors.FirstOrDefaultAsync(a => a.Id == author.Id);
         var updateAuthor = await _dbContext.Authors.FindAsync(author.Id);
         if (updateAuthor is null)
         {
@@ -48,15 +46,8 @@ public class AuthorService : IAuthorService
         }
         updateAuthor.Name = author.Name;
         updateAuthor.DateOfBirth = author.DateOfBirth;
-        try
-        {
-            await _dbContext.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException e)
-        {
-            throw new DbUpdateConcurrencyException(e.Message, e);
-        }  
-        
+
+        await _dbContext.SaveChangesAsync();
     }
     public async Task DeleteAuthorAsync(long id)
     {
