@@ -4,6 +4,7 @@ namespace LibraryManagementSystem.Services.Local;
 
 public class AuthorService : IAuthorService
 {
+    private IAuthorService _authorServiceImplementation;
     private static readonly List<Author> Authors = new();
 
     private static long _idAuthor;
@@ -44,5 +45,15 @@ public class AuthorService : IAuthorService
         }
 
         Authors.Remove(deleteAuthor);
+    }
+
+    public Task<IEnumerable<Author>> FindAuthorsByNameAsync(string name)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<IEnumerable<AuthorWithCount>> GetAllAuthorsWithBooksCountAsync()
+    {
+        throw new NotImplementedException();
     }
 }

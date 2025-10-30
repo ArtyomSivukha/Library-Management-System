@@ -63,4 +63,9 @@ public class BookService : IBookService
         Books.Remove(bookToDelete);
     }
 
+    public Task<IEnumerable<Book>> GetBooksPublishedAfterAsync(int year)
+    {
+        throw new NotImplementedException();
+    }
+    
 }

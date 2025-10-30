@@ -37,7 +37,7 @@ public class BookService : IBookService
       var author = await _dbContext.Authors.FindAsync(book.AuthorId);
       if (author is null)
       {
-         throw new NullReferenceException($"Author with id {book.AuthorId} does not exist");
+         throw new ArgumentNullException($"Author with id {book.AuthorId} does not exist");
       }
 
       var newBook = ToEntity(book);
@@ -45,6 +45,7 @@ public class BookService : IBookService
       _dbContext.Books.Add(newBook);
       await _dbContext.SaveChangesAsync();
       
+      book.Id = newBook.Id;
       return book;
    }
 
@@ -65,7 +66,7 @@ public class BookService : IBookService
       var author = await _dbContext.Authors.FindAsync(book.AuthorId);
       if (author is null)
       {
-         throw new NullReferenceException($"Author with id {book.AuthorId} does not exist");
+         throw new ArgumentNullException($"Author with id {book.AuthorId} does not exist");
       }
       
       bookToUpdate.Title = book.Title;
@@ -85,6 +86,25 @@ public class BookService : IBookService
       
       _dbContext.Books.Remove(deleteBook);
       await _dbContext.SaveChangesAsync();
+   }
+
+   public async Task<IEnumerable<Models.Book>> GetBooksPublishedAfterAsync(int year)
+   {
+      if (year < 0)
+      {
+         throw new ArgumentException("Incorrect year");
+      }
+      var books = await _dbContext.Books.
+         Include(b => b.Author).
+         Where(b => b.PublisherYear > year).
+         Select(b => FromEntityToModel(b)).
+         ToArrayAsync();
+
+      if (!books.Any())
+      {
+         throw new ArgumentNullException(nameof(books), $"{nameof(books)} is null");
+      }
+      return books;
    }
 
    private static Book ToEntity(Models.Book book) =>

@@ -76,4 +76,23 @@ public class BooksController : ControllerBase
             return BadRequest(e.Message);
         }
     }
+
+    [HttpGet("after/{year:int}")]
+    public async Task<IActionResult> GetBooksAfter(int year)
+    {
+        try
+        {
+            var books = await _bookService.GetBooksPublishedAfterAsync(year);
+            return Ok(books);
+        }
+        catch (ArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (InvalidOperationException e)
+        {
+            return NotFound(e.Message);
+        }
+
+    }
 }

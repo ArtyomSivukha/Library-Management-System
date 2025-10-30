@@ -9,4 +9,5 @@ public interface IBookService
     Task<Book> CreateBookAsync(Book book);
     Task UpdateBookAsync(Book book);
     Task DeleteBookAsync(long id);
+    Task<IEnumerable<Book>> GetBooksPublishedAfterAsync(int year);
 }

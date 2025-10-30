@@ -9,4 +9,6 @@ public interface IAuthorService
     Task<Author> CreateAuthorAsync(Author author);
     Task UpdateAuthorAsync(Author author);
     Task DeleteAuthorAsync(long id);
+    Task<IEnumerable<Author>> FindAuthorsByNameAsync(string name);
+    Task<IEnumerable<AuthorWithCount>> GetAllAuthorsWithBooksCountAsync();
 }

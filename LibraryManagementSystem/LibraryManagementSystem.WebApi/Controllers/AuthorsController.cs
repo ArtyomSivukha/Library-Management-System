@@ -68,4 +68,37 @@ public class AuthorsController : ControllerBase
             return BadRequest(e.Message);
         }
     }
+
+    [HttpGet("search")]
+    public async Task<IActionResult> FindAuthorsByNameAsync(string name)
+    {
+        try
+        {
+            var authorsByName =  await _authorService.FindAuthorsByNameAsync(name);
+            return Ok(authorsByName);
+        }
+        catch (ArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (InvalidOperationException e)
+        {
+            return NotFound(e.Message);
+        }
+    }
+    [HttpGet("booksCount")]
+    public async Task<IActionResult> GetAllAuthorsWithBooks()
+    {
+        try
+        {
+            var authors = await _authorService.GetAllAuthorsWithBooksCountAsync();
+            return Ok(authors);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Ошибка: {ex.Message}");
+        }
+    }
+   
+    
 }
