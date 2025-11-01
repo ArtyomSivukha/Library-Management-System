@@ -1,7 +1,6 @@
-﻿using LibraryManagementSystem.DataAccessLayer.Entities;
+﻿using LibraryManagementSystem.DataAccessLayer.Repositories;
 using LibraryManagementSystem.BusinessLogicLayer;
 using LibraryManagementSystem.BusinessLogicLayer.Models;
-using Microsoft.EntityFrameworkCore;
 using Author = LibraryManagementSystem.DataAccessLayer.Entities.Author;
 using Models_Author = LibraryManagementSystem.BusinessLogicLayer.Models.Author;
 
@@ -10,21 +9,22 @@ namespace LibraryManagementSystem.DataAccessLayer;
 
 public class AuthorService : IAuthorService
 {
-    private readonly LibraryDbContext _dbContext;
+    private readonly IAuthorRepository _authorRepository;
 
-    public AuthorService(LibraryDbContext dbContext)
+    public AuthorService(IAuthorRepository authorRepository)
     {
-        _dbContext = dbContext;
+        _authorRepository = authorRepository;
     }
 
     public async Task<IEnumerable<Models_Author>> GetAllAuthorsAsync()
     {
-        return await _dbContext.Authors.Select(author => FromEntityToModel(author)).ToArrayAsync();
+        var authors = await _authorRepository.GetAllAsync();
+        return authors.Select(FromEntityToModel);
     }
 
     public async Task<Models_Author?> GetAuthorByIdAsync(Guid id)
     {
-        var author = await _dbContext.Authors.FindAsync(id);
+        var author = await _authorRepository.GetByIdAsync(id);
         if (author is null)
         {
             throw new ArgumentNullException(nameof(author), $"{nameof(author)} is null");
@@ -40,8 +40,7 @@ public class AuthorService : IAuthorService
         }
 
         var newAuthor = ToEntity(author);
-        _dbContext.Authors.Add(newAuthor);
-        await _dbContext.SaveChangesAsync();
+        newAuthor = await _authorRepository.CreateAsync(newAuthor);
 
         author.Id = newAuthor.Id;
         return author;
@@ -49,7 +48,7 @@ public class AuthorService : IAuthorService
 
     public async Task UpdateAuthorAsync(Models_Author author)
     {
-        var updateAuthor = await _dbContext.Authors.FindAsync(author.Id);
+        var updateAuthor = await _authorRepository.GetByIdAsync(author.Id);
         if (updateAuthor is null)
         {
             throw new ArgumentNullException(nameof(updateAuthor), $"{nameof(updateAuthor)} is null");
@@ -58,19 +57,18 @@ public class AuthorService : IAuthorService
         updateAuthor.Name = author.Name;
         updateAuthor.DateOfBirth = author.DateOfBirth;
 
-        await _dbContext.SaveChangesAsync();
+        await _authorRepository.UpdateAsync(updateAuthor);
     }
 
     public async Task DeleteAuthorAsync(Guid id)
     {
-        var author = await _dbContext.Authors.FindAsync(id);
+        var author = await _authorRepository.GetByIdAsync(id);
         if (author is null)
         {
             throw new ArgumentNullException(nameof(author), $"{nameof(author)} is null");
         }
 
-        _dbContext.Authors.Remove(author);
-        await _dbContext.SaveChangesAsync();
+        await _authorRepository.DeleteAsync(id);
     }
 
     public async Task<IEnumerable<Models_Author>> FindAuthorsByNameAsync(string name)
@@ -80,26 +78,25 @@ public class AuthorService : IAuthorService
             throw new ArgumentException("The name cannot be empty");
         }
 
-        var authors = await _dbContext.Authors
-            .Where(author => author.Name.Contains(name))
-            .Select(author => FromEntityToModel(author))
-            .ToArrayAsync();
+        var authors = await _authorRepository.FindByNameAsync(name);
+        var authorsList = authors.Select(FromEntityToModel).ToList();
 
-        if (!authors.Any())
+        if (!authorsList.Any())
         {
             throw new InvalidOperationException($"No authors with names containing '{name}' were found");
         }
 
-        return authors;
+        return authorsList;
     }
 
     public async Task<IEnumerable<AuthorWithCount>> GetAllAuthorsWithBooksCountAsync()
     {
-        var authors = await _dbContext.Authors.Select(author => new AuthorWithCount(
-            FromEntityToModel(author),
-            author.Books.Count())).ToArrayAsync();
+        var authors = await _authorRepository.GetAllAsync();
+        var booksCount = await _authorRepository.GetBooksCountByAuthorAsync();
 
-        return authors;
+        return authors.Select(author => new AuthorWithCount(
+            FromEntityToModel(author),
+            booksCount.GetValueOrDefault(author.Id, 0)));
     }
 
     private static Author ToEntity(Models_Author author) =>

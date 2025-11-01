@@ -1,6 +1,7 @@
 using LibraryManagementSystem.BusinessLogicLayer;
 using LibraryManagementSystem.DataAccessLayer;
 using LibraryManagementSystem.DataAccessLayer.Entities;
+using LibraryManagementSystem.DataAccessLayer.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +12,9 @@ builder.Services.AddDbContext<LibraryDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("LibraryDbContext"));
 });
+
+builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
+builder.Services.AddScoped<IBookRepository, BookRepository>();
 
 builder.Services.AddScoped<IAuthorService, AuthorService>();
 builder.Services.AddScoped<IBookService, BookService>();
