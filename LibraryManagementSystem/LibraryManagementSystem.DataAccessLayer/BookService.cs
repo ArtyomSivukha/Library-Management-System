@@ -1,7 +1,11 @@
-﻿using LibraryManagementSystem.Services.EntityFramework.Entities;
+﻿using LibraryManagementSystem.DataAccessLayer.Entities;
+using LibraryManagementSystem.BusinessLogicLayer;
+using LibraryManagementSystem.BusinessLogicLayer.Models;
 using Microsoft.EntityFrameworkCore;
+using Book = LibraryManagementSystem.DataAccessLayer.Entities.Book;
+using Models_Book = LibraryManagementSystem.BusinessLogicLayer.Models.Book;
 
-namespace LibraryManagementSystem.Services.EntityFramework;
+namespace LibraryManagementSystem.DataAccessLayer;
 public class BookService : IBookService
 {
    private readonly LibraryDbContext _dbContext;
@@ -11,7 +15,7 @@ public class BookService : IBookService
       _dbContext = dbContext;
    }
 
-   public async Task<IEnumerable<Models.Book>> GetAllBooksAsync()
+   public async Task<IEnumerable<Models_Book>> GetAllBooksAsync()
    {
       return await _dbContext.Books
          .Include(book => book.Author)
@@ -19,7 +23,7 @@ public class BookService : IBookService
          .ToArrayAsync();
    }
 
-   public async Task<Models.Book?> GetBookByIdAsync(long id)
+   public async Task<Models_Book?> GetBookByIdAsync(long id)
    {
       var book = await _dbContext.Books
          .Include(b => b.Author)
@@ -31,7 +35,7 @@ public class BookService : IBookService
       return FromEntityToModel(book);
    }
 
-   public async Task<Models.Book> CreateBookAsync(Models.Book book)
+   public async Task<Models_Book> CreateBookAsync(Models_Book book)
    {
       if (book is null)
       {
@@ -53,7 +57,7 @@ public class BookService : IBookService
       return book;
    }
 
-   public async Task UpdateBookAsync(Models.Book book)
+   public async Task UpdateBookAsync(Models_Book book)
    {
       if (book is null)
       {
@@ -92,7 +96,7 @@ public class BookService : IBookService
       await _dbContext.SaveChangesAsync();
    }
 
-   public async Task<IEnumerable<Models.Book>> GetBooksPublishedAfterAsync(int year)
+   public async Task<IEnumerable<Models_Book>> GetBooksPublishedAfterAsync(int year)
    {
       if (year < 0)
       {
@@ -111,7 +115,7 @@ public class BookService : IBookService
       return books;
    }
 
-   private static Book ToEntity(Models.Book book) =>
+   private static Book ToEntity(Models_Book book) =>
       new()
       {
          Id = book.Id,
@@ -119,7 +123,7 @@ public class BookService : IBookService
          PublisherYear = book.PublisherYear
       };
 
-   private static Models.Book FromEntityToModel(Book book) =>
+   private static Models_Book FromEntityToModel(Book book) =>
       new()
       {
          Id = book.Id,

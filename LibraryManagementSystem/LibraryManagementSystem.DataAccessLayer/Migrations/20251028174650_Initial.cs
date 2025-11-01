@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace LibraryManagementSystem.Services.EntityFramework.Migrations
+namespace LibraryManagementSystem.DataAccessLayer.Migrations
 {
     /// <inheritdoc />
     public partial class Initial : Migration

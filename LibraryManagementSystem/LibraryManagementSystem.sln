@@ -2,11 +2,11 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryManagementSystem.WebApi", "LibraryManagementSystem.WebApi\LibraryManagementSystem.WebApi.csproj", "{4A70D325-2598-492C-8903-4E87091950DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryManagementSystem.Services", "LibraryManagementSystem.Services\LibraryManagementSystem.Services.csproj", "{BC08CF97-E078-422A-83AC-7933520B26FA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryManagementSystem.BusinessLogicLayer", "LibraryManagementSystem.BusinessLogicLayer\LibraryManagementSystem.BusinessLogicLayer.csproj", "{BC08CF97-E078-422A-83AC-7933520B26FA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryManagementSystem.Services.Local", "LibraryManagementSystem.Services.Local\LibraryManagementSystem.Services.Local.csproj", "{59D65833-5C88-4CBE-B9C2-A29B688F1B52}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryManagementSystem.Services.EntityFramework", "LibraryManagementSystem.Services.EntityFramework\LibraryManagementSystem.Services.EntityFramework.csproj", "{F287AA0C-1EF5-4B1A-8F4C-9059A34083B8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryManagementSystem.DataAccessLayer", "LibraryManagementSystem.DataAccessLayer\LibraryManagementSystem.DataAccessLayer.csproj", "{F287AA0C-1EF5-4B1A-8F4C-9059A34083B8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

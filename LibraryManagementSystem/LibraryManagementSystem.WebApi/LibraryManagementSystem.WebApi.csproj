@@ -19,9 +19,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\LibraryManagementSystem.Services.EntityFramework\LibraryManagementSystem.Services.EntityFramework.csproj" />
+      <ProjectReference Include="..\LibraryManagementSystem.DataAccessLayer\LibraryManagementSystem.DataAccessLayer.csproj" />
       <ProjectReference Include="..\LibraryManagementSystem.Services.Local\LibraryManagementSystem.Services.Local.csproj" />
-      <ProjectReference Include="..\LibraryManagementSystem.Services\LibraryManagementSystem.Services.csproj" />
+      <ProjectReference Include="..\LibraryManagementSystem.BusinessLogicLayer\LibraryManagementSystem.BusinessLogicLayer.csproj" />
     </ItemGroup>
 
 </Project>

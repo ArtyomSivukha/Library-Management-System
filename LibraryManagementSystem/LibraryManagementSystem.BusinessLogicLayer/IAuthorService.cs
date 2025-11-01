@@ -1,6 +1,6 @@
-using LibraryManagementSystem.Services.Models;
+using LibraryManagementSystem.BusinessLogicLayer.Models;
 
-namespace LibraryManagementSystem.Services;
+namespace LibraryManagementSystem.BusinessLogicLayer;
 
 public interface IAuthorService
 {

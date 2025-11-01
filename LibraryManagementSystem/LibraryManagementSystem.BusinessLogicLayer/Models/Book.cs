@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace LibraryManagementSystem.Services.EntityFramework.Entities;
+namespace LibraryManagementSystem.BusinessLogicLayer.Models;
 
 public class Book
 {
@@ -8,7 +8,8 @@ public class Book
     
     [Required(ErrorMessage = "Title is required")]
     public string Title { get; set; }
+    
     [Range(1, int.MaxValue, ErrorMessage = "Please enter a positive number")]
     public int PublisherYear { get; set; }
-    public Author Author { get; set; }
+    public long AuthorId { get; set; }
 }

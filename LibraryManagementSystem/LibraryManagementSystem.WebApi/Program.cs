@@ -1,6 +1,6 @@
-using LibraryManagementSystem.Services;
-using LibraryManagementSystem.Services.EntityFramework;
-using LibraryManagementSystem.Services.EntityFramework.Entities;
+using LibraryManagementSystem.BusinessLogicLayer;
+using LibraryManagementSystem.DataAccessLayer;
+using LibraryManagementSystem.DataAccessLayer.Entities;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

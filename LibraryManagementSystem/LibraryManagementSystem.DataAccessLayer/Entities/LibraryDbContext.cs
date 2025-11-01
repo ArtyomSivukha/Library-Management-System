@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace LibraryManagementSystem.Services.EntityFramework.Entities;
+namespace LibraryManagementSystem.DataAccessLayer.Entities;
 
 public class LibraryDbContext : DbContext
 {

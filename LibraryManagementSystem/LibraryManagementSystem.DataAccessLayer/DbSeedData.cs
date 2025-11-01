@@ -1,7 +1,7 @@
-using LibraryManagementSystem.Services.EntityFramework.Entities;
+using LibraryManagementSystem.DataAccessLayer.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace LibraryManagementSystem.Services.EntityFramework;
+namespace LibraryManagementSystem.DataAccessLayer;
 
 internal static class DbSeedData
 {

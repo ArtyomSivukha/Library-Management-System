@@ -1,9 +1,12 @@
-﻿using LibraryManagementSystem.Services.EntityFramework.Entities;
-using LibraryManagementSystem.Services.Models;
+﻿using LibraryManagementSystem.DataAccessLayer.Entities;
+using LibraryManagementSystem.BusinessLogicLayer;
+using LibraryManagementSystem.BusinessLogicLayer.Models;
 using Microsoft.EntityFrameworkCore;
-using Author = LibraryManagementSystem.Services.EntityFramework.Entities.Author;
+using Author = LibraryManagementSystem.DataAccessLayer.Entities.Author;
+using Models_Author = LibraryManagementSystem.BusinessLogicLayer.Models.Author;
 
-namespace LibraryManagementSystem.Services.EntityFramework;
+namespace LibraryManagementSystem.DataAccessLayer;
+
 
 public class AuthorService : IAuthorService
 {
@@ -14,12 +17,12 @@ public class AuthorService : IAuthorService
         _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<Models.Author>> GetAllAuthorsAsync()
+    public async Task<IEnumerable<Models_Author>> GetAllAuthorsAsync()
     {
         return await _dbContext.Authors.Select(author => FromEntityToModel(author)).ToArrayAsync();
     }
 
-    public async Task<Models.Author?> GetAuthorByIdAsync(long id)
+    public async Task<Models_Author?> GetAuthorByIdAsync(long id)
     {
         var author = await _dbContext.Authors.FindAsync(id);
         if (author is null)
@@ -29,7 +32,7 @@ public class AuthorService : IAuthorService
         return FromEntityToModel(author);
     }
 
-    public async Task<Models.Author> CreateAuthorAsync(Models.Author author)
+    public async Task<Models_Author> CreateAuthorAsync(Models_Author author)
     {
         if (author is null)
         {
@@ -44,7 +47,7 @@ public class AuthorService : IAuthorService
         return author;
     }
 
-    public async Task UpdateAuthorAsync(Models.Author author)
+    public async Task UpdateAuthorAsync(Models_Author author)
     {
         var updateAuthor = await _dbContext.Authors.FindAsync(author.Id);
         if (updateAuthor is null)
@@ -70,7 +73,7 @@ public class AuthorService : IAuthorService
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<Models.Author>> FindAuthorsByNameAsync(string name)
+    public async Task<IEnumerable<Models_Author>> FindAuthorsByNameAsync(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
@@ -99,7 +102,7 @@ public class AuthorService : IAuthorService
         return authors;
     }
 
-    private static Author ToEntity(Models.Author author) =>
+    private static Author ToEntity(Models_Author author) =>
         new()
         {
             Id = author.Id,
@@ -107,7 +110,7 @@ public class AuthorService : IAuthorService
             DateOfBirth = author.DateOfBirth,
         };
 
-    private static Models.Author FromEntityToModel(Author author) =>
+    private static Models_Author FromEntityToModel(Author author) =>
         new()
         {
             Id = author.Id,

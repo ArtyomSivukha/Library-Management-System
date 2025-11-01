@@ -1,5 +1,5 @@
-﻿using LibraryManagementSystem.Services;
-using LibraryManagementSystem.Services.Models;
+﻿using LibraryManagementSystem.BusinessLogicLayer;
+using LibraryManagementSystem.BusinessLogicLayer.Models;
 
 namespace LibraryManagementSystem.WebApi.Controllers;
 
