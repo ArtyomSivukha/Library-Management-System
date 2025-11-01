@@ -28,71 +28,39 @@ public class BooksController : ControllerBase
     public async Task<IActionResult> GetBookByIdAsync(long id)
     {
         var book = await _bookService.GetBookByIdAsync(id);
-        return book is null ? NotFound() : Ok(book);
+        return Ok(book);
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateBookAsync(Book book)
     {
-        try
-        {
-            var createdBook = await _bookService.CreateBookAsync(book);
-            return Ok(createdBook);
-        }
-        catch (ArgumentException e)
-        {
-            return BadRequest(e.Message);
-        }
+        var createdBook = await _bookService.CreateBookAsync(book);
+        return Ok(createdBook);
     }
 
     [HttpPut("{id:long}")]
     public async Task<IActionResult> UpdateBookAsync(Book book, long id)
     {
-        if (id != book.Id)
-        {
-            return BadRequest("Route ID and book ID do not match");
-        }
-        try
-        {
-            await _bookService.UpdateBookAsync(book);
-            return Ok();
-        }
-        catch (ArgumentException e)
-        {
-            return BadRequest(e.Message);
-        }
+        // if (id != book.Id)
+        // {
+        //     return BadRequest("Route ID and book ID do not match");
+        // }
+
+        await _bookService.UpdateBookAsync(book);
+        return Ok();
     }
 
     [HttpDelete("{id:long}")]
     public async Task<IActionResult> DeleteBookAsync(long id)
     {
-        try
-        {
-            await _bookService.DeleteBookAsync(id);
-            return Ok();
-        }
-        catch (ArgumentException e)
-        {
-            return BadRequest(e.Message);
-        }
+        await _bookService.DeleteBookAsync(id);
+        return Ok();
     }
 
     [HttpGet("after/{year:int}")]
     public async Task<IActionResult> GetBooksAfter(int year)
     {
-        try
-        {
-            var books = await _bookService.GetBooksPublishedAfterAsync(year);
-            return Ok(books);
-        }
-        catch (ArgumentException e)
-        {
-            return BadRequest(e.Message);
-        }
-        catch (InvalidOperationException e)
-        {
-            return NotFound(e.Message);
-        }
-
+        var books = await _bookService.GetBooksPublishedAfterAsync(year);
+        return Ok(books);
     }
 }

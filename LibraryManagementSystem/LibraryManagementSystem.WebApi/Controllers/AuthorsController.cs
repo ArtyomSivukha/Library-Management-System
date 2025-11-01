@@ -27,7 +27,7 @@ public class AuthorsController : ControllerBase
     public async Task<IActionResult> GetAuthorByIdAsync(long id)
     {
         var author = await _authorService.GetAuthorByIdAsync(id);
-        return author == null ? NotFound() : Ok(author);
+        return Ok(author);
     }
 
     [HttpPost]
@@ -40,65 +40,33 @@ public class AuthorsController : ControllerBase
     [HttpPut("{id:long}")]
     public async Task<IActionResult> UpdateAuthorAsync(Author author, long id)
     {
-        if (id != author.Id)
-        {
-            return BadRequest("Route ID and author ID do not match");
-        }
-        try
-        {
-            await _authorService.UpdateAuthorAsync(author);
-            return Ok();
-        }
-        catch (ArgumentException e)
-        {
-            return BadRequest(e.Message);            
-        }
+        // if (id != author.Id)
+        // {
+        //     return BadRequest("Route ID and author ID do not match");
+        // }
+
+        await _authorService.UpdateAuthorAsync(author);
+        return Ok();
     }
 
     [HttpDelete("{id:long}")]
     public async Task<IActionResult> DeleteAuthorAsync(long id)
     {
-        try
-        {
-            await _authorService.DeleteAuthorAsync(id);
-            return Ok();
-        }
-        catch (ArgumentException e)
-        {
-            return BadRequest(e.Message);
-        }
+        await _authorService.DeleteAuthorAsync(id);
+        return Ok();
     }
 
     [HttpGet("search")]
     public async Task<IActionResult> FindAuthorsByNameAsync(string name)
     {
-        try
-        {
-            var authorsByName =  await _authorService.FindAuthorsByNameAsync(name);
-            return Ok(authorsByName);
-        }
-        catch (ArgumentException e)
-        {
-            return BadRequest(e.Message);
-        }
-        catch (InvalidOperationException e)
-        {
-            return NotFound(e.Message);
-        }
+        var authorsByName = await _authorService.FindAuthorsByNameAsync(name);
+        return Ok(authorsByName);
     }
+
     [HttpGet("booksCount")]
     public async Task<IActionResult> GetAllAuthorsWithBooks()
     {
-        try
-        {
-            var authors = await _authorService.GetAllAuthorsWithBooksCountAsync();
-            return Ok(authors);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Ошибка: {ex.Message}");
-        }
+        var authors = await _authorService.GetAllAuthorsWithBooksCountAsync();
+        return Ok(authors);
     }
-   
-    
 }

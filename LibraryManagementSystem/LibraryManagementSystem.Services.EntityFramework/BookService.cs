@@ -24,7 +24,11 @@ public class BookService : IBookService
       var book = await _dbContext.Books
          .Include(b => b.Author)
          .FirstOrDefaultAsync(b => b.Id == id);
-      return book is null ? null : FromEntityToModel(book);
+      if (book is null)
+      {
+         throw new ArgumentNullException(nameof(book), $"{nameof(book)} is null");
+      }
+      return FromEntityToModel(book);
    }
 
    public async Task<Models.Book> CreateBookAsync(Models.Book book)

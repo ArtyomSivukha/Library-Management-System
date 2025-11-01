@@ -16,18 +16,22 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
         CancellationToken cancellationToken)
     {
         _logger.LogError(
-            exception, "Exception occurred: {Message}", exception.Message);
+            exception, "Unhandled exception occured");
 
-        var problemDetails = new ProblemDetails
+        httpContext.Response.StatusCode = exception switch
         {
-            Status = StatusCodes.Status400BadRequest,
-            Title = "Server error"
+            ApplicationException => StatusCodes.Status500InternalServerError,
+            _ => StatusCodes.Status400BadRequest
         };
 
-        httpContext.Response.StatusCode = problemDetails.Status.Value;
-
-        await httpContext.Response
-            .WriteAsJsonAsync(problemDetails, cancellationToken);
+        await httpContext.Response.WriteAsJsonAsync(
+            new ProblemDetails
+            {
+                Type = exception.GetType().Name,
+                Title = "An error occurred.",
+                Detail = exception.Message,
+            });
+          
 
         return true;
     }

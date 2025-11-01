@@ -22,7 +22,11 @@ public class AuthorService : IAuthorService
     public async Task<Models.Author?> GetAuthorByIdAsync(long id)
     {
         var author = await _dbContext.Authors.FindAsync(id);
-        return author is null ? null : FromEntityToModel(author);
+        if (author is null)
+        {
+            throw new ArgumentNullException(nameof(author), $"{nameof(author)} is null");
+        }
+        return FromEntityToModel(author);
     }
 
     public async Task<Models.Author> CreateAuthorAsync(Models.Author author)
