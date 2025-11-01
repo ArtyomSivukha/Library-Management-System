@@ -23,8 +23,8 @@ public class AuthorsController : ControllerBase
         return Ok(authors);
     }
 
-    [HttpGet("{id:long}")]
-    public async Task<IActionResult> GetAuthorByIdAsync(long id)
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetAuthorByIdAsync(Guid id)
     {
         var author = await _authorService.GetAuthorByIdAsync(id);
         return Ok(author);
@@ -37,20 +37,20 @@ public class AuthorsController : ControllerBase
         return Ok(createdAuthor);
     }
 
-    [HttpPut("{id:long}")]
-    public async Task<IActionResult> UpdateAuthorAsync(Author author, long id)
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> UpdateAuthorAsync(Author author, Guid id)
     {
-        // if (id != author.Id)
-        // {
-        //     return BadRequest("Route ID and author ID do not match");
-        // }
+        if (id != author.Id)
+        {
+            return BadRequest("Route ID and author ID do not match");
+        }
 
         await _authorService.UpdateAuthorAsync(author);
         return Ok();
     }
 
-    [HttpDelete("{id:long}")]
-    public async Task<IActionResult> DeleteAuthorAsync(long id)
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteAuthorAsync(Guid id)
     {
         await _authorService.DeleteAuthorAsync(id);
         return Ok();

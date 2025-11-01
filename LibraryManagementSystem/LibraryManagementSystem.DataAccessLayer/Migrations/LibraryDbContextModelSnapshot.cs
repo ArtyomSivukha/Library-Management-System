@@ -24,11 +24,9 @@ namespace LibraryManagementSystem.DataAccessLayer.Migrations
 
             modelBuilder.Entity("LibraryManagementSystem.DataAccessLayer.Entities.Author", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2");
@@ -44,14 +42,12 @@ namespace LibraryManagementSystem.DataAccessLayer.Migrations
 
             modelBuilder.Entity("LibraryManagementSystem.DataAccessLayer.Entities.Book", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<long>("AuthorId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("AuthorId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("PublisherYear")
                         .HasColumnType("int");

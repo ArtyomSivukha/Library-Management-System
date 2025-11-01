@@ -4,7 +4,7 @@ namespace LibraryManagementSystem.DataAccessLayer.Entities;
 
 public class Book
 {
-    public long Id { get; set; }
+    public Guid Id { get; set; }
     
     [Required(ErrorMessage = "Title is required")]
     public string Title { get; set; }

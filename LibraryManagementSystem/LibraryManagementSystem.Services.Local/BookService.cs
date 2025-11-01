@@ -6,7 +6,6 @@ namespace LibraryManagementSystem.Services.Local;
 public class BookService : IBookService
 {
     private static readonly List<Book> Books = new();
-    private static long _bookId;
 
     private readonly IAuthorService _authorService;
 
@@ -15,13 +14,13 @@ public class BookService : IBookService
         _authorService = authorService;
     }
 
-    private long GetNextBookId()
+    private Guid GetNextBookId()
     {
-        return ++_bookId;
+        return Guid.NewGuid();
     }
 
     public Task<IEnumerable<Book>> GetAllBooksAsync() => Task.FromResult<IEnumerable<Book>>(Books);
-    public Task<Book?> GetBookByIdAsync(long id) => Task.FromResult(Books.FirstOrDefault(p => p.Id == id));
+    public Task<Book?> GetBookByIdAsync(Guid id) => Task.FromResult(Books.FirstOrDefault(p => p.Id == id));
     
     public async Task<Book> CreateBookAsync(Book book)
     {
@@ -53,7 +52,7 @@ public class BookService : IBookService
         bookToUpdate.AuthorId = book.AuthorId;
     }
     
-    public async Task DeleteBookAsync(long id)
+    public async Task DeleteBookAsync(Guid id)
     {
         var bookToDelete = await GetBookByIdAsync(id);
         if (bookToDelete is null)

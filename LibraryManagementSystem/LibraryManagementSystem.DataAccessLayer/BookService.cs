@@ -23,7 +23,7 @@ public class BookService : IBookService
          .ToArrayAsync();
    }
 
-   public async Task<Models_Book?> GetBookByIdAsync(long id)
+   public async Task<Models_Book?> GetBookByIdAsync(Guid id)
    {
       var book = await _dbContext.Books
          .Include(b => b.Author)
@@ -84,7 +84,7 @@ public class BookService : IBookService
       await _dbContext.SaveChangesAsync();
    }
 
-   public async Task DeleteBookAsync(long id)
+   public async Task DeleteBookAsync(Guid id)
    {
       var deleteBook = await _dbContext.Books.FindAsync(id);
       if (deleteBook is null)

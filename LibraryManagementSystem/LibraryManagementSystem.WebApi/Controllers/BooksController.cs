@@ -23,8 +23,8 @@ public class BooksController : ControllerBase
         return Ok(books);
     }
 
-    [HttpGet("{id:long}")]
-    public async Task<IActionResult> GetBookByIdAsync(long id)
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetBookByIdAsync(Guid id)
     {
         var book = await _bookService.GetBookByIdAsync(id);
         return Ok(book);
@@ -37,20 +37,20 @@ public class BooksController : ControllerBase
         return Ok(createdBook);
     }
 
-    [HttpPut("{id:long}")]
-    public async Task<IActionResult> UpdateBookAsync(Book book, long id)
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> UpdateBookAsync(Book book, Guid id)
     {
-        // if (id != book.Id)
-        // {
-        //     return BadRequest("Route ID and book ID do not match");
-        // }
+        if (id != book.Id)
+        {
+            return BadRequest("Route ID and book ID do not match");
+        }
 
         await _bookService.UpdateBookAsync(book);
         return Ok();
     }
 
-    [HttpDelete("{id:long}")]
-    public async Task<IActionResult> DeleteBookAsync(long id)
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteBookAsync(Guid id)
     {
         await _bookService.DeleteBookAsync(id);
         return Ok();

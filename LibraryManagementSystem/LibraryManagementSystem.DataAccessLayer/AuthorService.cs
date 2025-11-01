@@ -22,7 +22,7 @@ public class AuthorService : IAuthorService
         return await _dbContext.Authors.Select(author => FromEntityToModel(author)).ToArrayAsync();
     }
 
-    public async Task<Models_Author?> GetAuthorByIdAsync(long id)
+    public async Task<Models_Author?> GetAuthorByIdAsync(Guid id)
     {
         var author = await _dbContext.Authors.FindAsync(id);
         if (author is null)
@@ -61,7 +61,7 @@ public class AuthorService : IAuthorService
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task DeleteAuthorAsync(long id)
+    public async Task DeleteAuthorAsync(Guid id)
     {
         var author = await _dbContext.Authors.FindAsync(id);
         if (author is null)

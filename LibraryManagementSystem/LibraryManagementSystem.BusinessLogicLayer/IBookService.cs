@@ -5,9 +5,9 @@ namespace LibraryManagementSystem.BusinessLogicLayer;
 public interface IBookService
 {
     Task<IEnumerable<Book>> GetAllBooksAsync();
-    Task<Book?> GetBookByIdAsync(long id);
+    Task<Book?> GetBookByIdAsync(Guid id);
     Task<Book> CreateBookAsync(Book book);
     Task UpdateBookAsync(Book book);
-    Task DeleteBookAsync(long id);
+    Task DeleteBookAsync(Guid id);
     Task<IEnumerable<Book>> GetBooksPublishedAfterAsync(int year);
 }

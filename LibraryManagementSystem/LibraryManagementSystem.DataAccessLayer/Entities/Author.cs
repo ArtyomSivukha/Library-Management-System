@@ -4,7 +4,7 @@ namespace LibraryManagementSystem.DataAccessLayer.Entities;
 
 public class Author
 {
-    public long Id { get; set; }
+    public Guid Id { get; set; }
 
     [Required(ErrorMessage = "Name is required")]
     public string Name { get; set; }

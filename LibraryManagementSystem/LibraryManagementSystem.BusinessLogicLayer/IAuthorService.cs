@@ -5,10 +5,10 @@ namespace LibraryManagementSystem.BusinessLogicLayer;
 public interface IAuthorService
 {
     Task<IEnumerable<Author>> GetAllAuthorsAsync();
-    Task<Author?> GetAuthorByIdAsync(long id);
+    Task<Author?> GetAuthorByIdAsync(Guid id);
     Task<Author> CreateAuthorAsync(Author author);
     Task UpdateAuthorAsync(Author author);
-    Task DeleteAuthorAsync(long id);
+    Task DeleteAuthorAsync(Guid id);
     Task<IEnumerable<Author>> FindAuthorsByNameAsync(string name);
     Task<IEnumerable<AuthorWithCount>> GetAllAuthorsWithBooksCountAsync();
 }
