@@ -1,5 +1,7 @@
-using LibraryManagementSystem.DataAccessLayer.Entities;
+using LibraryManagementSystem.BusinessLogicLayer.Repositories;
 using Microsoft.EntityFrameworkCore;
+using LibraryManagementSystem.DataAccessLayer.Entities;
+using Model_Author = LibraryManagementSystem.BusinessLogicLayer.Models.Author;
 
 namespace LibraryManagementSystem.DataAccessLayer.Repositories;
 
@@ -12,51 +14,86 @@ public class AuthorRepository : IAuthorRepository
         _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<Author>> GetAllAsync()
+    public async Task<IEnumerable<Model_Author>> GetAllAsync()
     {
-        return await _dbContext.Authors.ToArrayAsync();
+        var authorEntities = await _dbContext.Authors.Include(a => a.Books).ToArrayAsync();
+        return authorEntities.Select(FromEntityToModel);
     }
 
-    public async Task<Author?> GetByIdAsync(Guid id)
+    public async Task<Model_Author?> GetByIdAsync(Guid id)
     {
-        return await _dbContext.Authors.FindAsync(id);
+        var authorEntity = await _dbContext.Authors
+            .Include(a => a.Books)
+            .FirstOrDefaultAsync(a => a.Id == id);
+
+        return authorEntity != null ? FromEntityToModel(authorEntity) : null;
     }
 
-    public async Task<Author> CreateAsync(Author author)
+    public async Task<Model_Author> CreateAsync(Model_Author author)
     {
-        _dbContext.Authors.Add(author);
+        var authorEntity = ToEntity(author);
+        _dbContext.Authors.Add(authorEntity);
         await _dbContext.SaveChangesAsync();
+
+        author.Id = authorEntity.Id;
         return author;
     }
 
-    public async Task UpdateAsync(Author author)
+    public async Task UpdateAsync(Model_Author author)
     {
-        _dbContext.Authors.Update(author);
+        var authorEntity = await _dbContext.Authors
+            .Include(a => a.Books)
+            .FirstOrDefaultAsync(a => a.Id == author.Id);
+        if (authorEntity is null)
+        {
+            throw new ArgumentNullException(nameof(authorEntity), $"{nameof(authorEntity)} is null");
+        }
+
+        authorEntity.Name = author.Name;
+        authorEntity.DateOfBirth = author.DateOfBirth;
         await _dbContext.SaveChangesAsync();
     }
 
     public async Task DeleteAsync(Guid id)
     {
-        var author = await _dbContext.Authors.FindAsync(id);
-        if (author != null)
+        var authorEntity = await _dbContext.Authors.FindAsync(id);
+        if (authorEntity != null)
         {
-            _dbContext.Authors.Remove(author);
+            _dbContext.Authors.Remove(authorEntity);
             await _dbContext.SaveChangesAsync();
         }
     }
 
-    public async Task<IEnumerable<Author>> FindByNameAsync(string name)
+    public async Task<IEnumerable<Model_Author>> FindByNameAsync(string name)
     {
-        return await _dbContext.Authors
+        var authorEntities = await _dbContext.Authors
+            .Include(a => a.Books)
             .Where(a => a.Name.Contains(name))
             .ToArrayAsync();
+
+        return authorEntities.Select(FromEntityToModel);
     }
 
-    public async Task<Dictionary<Guid, int>> GetBooksCountByAuthorAsync()
-    {
-        return await _dbContext.Authors
-            .Select(a => new { a.Id, Count = a.Books.Count })
-            .ToDictionaryAsync(x => x.Id, x => x.Count);
-    }
+    private static Author ToEntity(Model_Author author) =>
+        new()
+        {
+            Id = author.Id,
+            Name = author.Name,
+            DateOfBirth = author.DateOfBirth,
+        };
+
+    private static Model_Author FromEntityToModel(Author author) =>
+        new()
+        {
+            Id = author.Id,
+            Name = author.Name,
+            DateOfBirth = author.DateOfBirth,
+            Books = author.Books.Select(a => new BusinessLogicLayer.Models.Book
+            {
+                Id = a.Id,
+                Title = a.Title,
+                PublisherYear = a.PublisherYear,
+                AuthorId = author.Id
+            })
+        };
 }
-

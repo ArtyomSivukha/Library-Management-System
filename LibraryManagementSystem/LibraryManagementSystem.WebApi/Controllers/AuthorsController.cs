@@ -1,5 +1,6 @@
-﻿using LibraryManagementSystem.BusinessLogicLayer;
-using LibraryManagementSystem.BusinessLogicLayer.Models;
+﻿using LibraryManagementSystem.BusinessLogicLayer.Services;
+using LibraryManagementSystem.WebApi.Mapping;
+using LibraryManagementSystem.WebApi.Models;
 
 namespace LibraryManagementSystem.WebApi.Controllers;
 
@@ -20,33 +21,34 @@ public class AuthorsController : ControllerBase
     public async Task<IActionResult> GetAllAuthorsAsync()
     {
         var authors = await _authorService.GetAllAuthorsAsync();
-        return Ok(authors);
+        var viewModels = ViewModelMapper.ToAuthorViewModel(authors);
+        return Ok(viewModels);
     }
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetAuthorByIdAsync(Guid id)
     {
         var author = await _authorService.GetAuthorByIdAsync(id);
-        return Ok(author);
+        var viewModel = ViewModelMapper.ToAuthorViewModel(author);
+        return Ok(viewModel);
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateAuthorsAsync(Author author)
+    public async Task<IActionResult> CreateAuthorsAsync(AuthorViewModel authorViewModel)
     {
+        var author = ViewModelMapper.ToBusinessModel(authorViewModel);
         var createdAuthor = await _authorService.CreateAuthorAsync(author);
-        return Ok(createdAuthor);
+        var resultViewModel = ViewModelMapper.ToAuthorViewModel(createdAuthor);
+        return Ok(resultViewModel);
+
     }
 
-    [HttpPut("{id:guid}")]
-    public async Task<IActionResult> UpdateAuthorAsync(Author author, Guid id)
+    [HttpPut]
+    public async Task<IActionResult> UpdateAuthorAsync(AuthorViewModel authorViewModel)
     {
-        if (id != author.Id)
-        {
-            return BadRequest("Route ID and author ID do not match");
-        }
-
+        var author = ViewModelMapper.ToBusinessModel(authorViewModel);
         await _authorService.UpdateAuthorAsync(author);
-        return Ok();
+        return await GetAuthorByIdAsync(author.Id);
     }
 
     [HttpDelete("{id:guid}")]
@@ -60,13 +62,15 @@ public class AuthorsController : ControllerBase
     public async Task<IActionResult> FindAuthorsByNameAsync(string name)
     {
         var authorsByName = await _authorService.FindAuthorsByNameAsync(name);
-        return Ok(authorsByName);
+        var viewModels = ViewModelMapper.ToAuthorViewModel(authorsByName);
+        return Ok(viewModels);
     }
 
     [HttpGet("booksCount")]
     public async Task<IActionResult> GetAllAuthorsWithBooks()
     {
-        var authors = await _authorService.GetAllAuthorsWithBooksCountAsync();
-        return Ok(authors);
+        var authors = await _authorService.GetAllAuthorsAsync();
+        var viewModels = ViewModelMapper.ToAuthorWithBooksViewModel(authors);
+        return Ok(viewModels);
     }
 }

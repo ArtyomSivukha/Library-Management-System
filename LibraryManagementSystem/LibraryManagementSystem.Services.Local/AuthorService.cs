@@ -1,5 +1,6 @@
 ﻿using LibraryManagementSystem.BusinessLogicLayer;
 using LibraryManagementSystem.BusinessLogicLayer.Models;
+using LibraryManagementSystem.BusinessLogicLayer.Services;
 
 namespace LibraryManagementSystem.Services.Local;
 
@@ -47,11 +48,6 @@ public class AuthorService : IAuthorService
     }
 
     public Task<IEnumerable<Author>> FindAuthorsByNameAsync(string name)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IEnumerable<AuthorWithCount>> GetAllAuthorsWithBooksCountAsync()
     {
         throw new NotImplementedException();
     }

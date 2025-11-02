@@ -1,5 +1,6 @@
-﻿using LibraryManagementSystem.BusinessLogicLayer;
-using LibraryManagementSystem.BusinessLogicLayer.Models;
+﻿using LibraryManagementSystem.BusinessLogicLayer.Services;
+using LibraryManagementSystem.WebApi.Mapping;
+using LibraryManagementSystem.WebApi.Models;
 
 namespace LibraryManagementSystem.WebApi.Controllers;
 
@@ -20,31 +21,31 @@ public class BooksController : ControllerBase
     public async Task<IActionResult> GetAllBooksAsync()
     {
         var books = await _bookService.GetAllBooksAsync();
-        return Ok(books);
+        var viewModel =  ViewModelMapper.ToBookViewModel(books);
+        return Ok(viewModel);
     }
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetBookByIdAsync(Guid id)
     {
         var book = await _bookService.GetBookByIdAsync(id);
-        return Ok(book);
+        var viewModel = ViewModelMapper.ToBookViewModel(book);
+        return Ok(viewModel);
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateBookAsync(Book book)
+    public async Task<IActionResult> CreateBookAsync(BookViewModel bookViewModel)
     {
+        var book = ViewModelMapper.ToBusinessModel(bookViewModel);
         var createdBook = await _bookService.CreateBookAsync(book);
-        return Ok(createdBook);
+        var resultViewModel = ViewModelMapper.ToBookViewModel(createdBook);
+        return Ok(resultViewModel);
     }
 
-    [HttpPut("{id:guid}")]
-    public async Task<IActionResult> UpdateBookAsync(Book book, Guid id)
+    [HttpPut]
+    public async Task<IActionResult> UpdateBookAsync(BookViewModel bookViewModel)
     {
-        if (id != book.Id)
-        {
-            return BadRequest("Route ID and book ID do not match");
-        }
-
+        var book = ViewModelMapper.ToBusinessModel(bookViewModel);
         await _bookService.UpdateBookAsync(book);
         return Ok();
     }
@@ -60,6 +61,7 @@ public class BooksController : ControllerBase
     public async Task<IActionResult> GetBooksAfter(int year)
     {
         var books = await _bookService.GetBooksPublishedAfterAsync(year);
-        return Ok(books);
+        var viewModels = ViewModelMapper.ToBookViewModel(books);
+        return Ok(viewModels);
     }
 }

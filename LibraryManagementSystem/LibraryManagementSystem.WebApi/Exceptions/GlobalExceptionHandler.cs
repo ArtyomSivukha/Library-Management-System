@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
+namespace LibraryManagementSystem.WebApi.Exceptions;
+
 public sealed class GlobalExceptionHandler : IExceptionHandler
 {
     private readonly ILogger<GlobalExceptionHandler> _logger;
@@ -15,14 +17,15 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
         Exception exception,
         CancellationToken cancellationToken)
     {
-        _logger.LogError(
-            exception, "Unhandled exception occured");
+        _logger.LogError(exception, "Unhandled exception occured");
 
-        httpContext.Response.StatusCode = exception switch
+        var statusCode = exception switch
         {
-            ApplicationException => StatusCodes.Status500InternalServerError,
-            _ => StatusCodes.Status400BadRequest
+            ArgumentException or ArgumentNullException => StatusCodes.Status400BadRequest,
+            _ => StatusCodes.Status500InternalServerError
         };
+
+        httpContext.Response.StatusCode = statusCode;
 
         await httpContext.Response.WriteAsJsonAsync(
             new ProblemDetails
@@ -30,8 +33,7 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
                 Type = exception.GetType().Name,
                 Title = "An error occurred.",
                 Detail = exception.Message,
-            });
-          
+            }, cancellationToken);
 
         return true;
     }

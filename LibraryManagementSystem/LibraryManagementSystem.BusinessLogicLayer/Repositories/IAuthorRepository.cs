@@ -1,6 +1,6 @@
-using LibraryManagementSystem.DataAccessLayer.Entities;
+using LibraryManagementSystem.BusinessLogicLayer.Models;
 
-namespace LibraryManagementSystem.DataAccessLayer.Repositories;
+namespace LibraryManagementSystem.BusinessLogicLayer.Repositories;
 
 public interface IAuthorRepository
 {
@@ -10,6 +10,5 @@ public interface IAuthorRepository
     Task UpdateAsync(Author author);
     Task DeleteAsync(Guid id);
     Task<IEnumerable<Author>> FindByNameAsync(string name);
-    Task<Dictionary<Guid, int>> GetBooksCountByAuthorAsync();
 }
 

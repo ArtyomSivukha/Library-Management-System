@@ -1,6 +1,6 @@
-using LibraryManagementSystem.DataAccessLayer.Entities;
+using LibraryManagementSystem.BusinessLogicLayer.Models;
 
-namespace LibraryManagementSystem.DataAccessLayer.Repositories;
+namespace LibraryManagementSystem.BusinessLogicLayer.Repositories;
 
 public interface IBookRepository
 {
