@@ -1,5 +1,6 @@
 using LibraryManagementSystem.BusinessLogicLayer.Repositories;
 using LibraryManagementSystem.BusinessLogicLayer.Services;
+using LibraryManagementSystem.DataAccessLayer;
 using LibraryManagementSystem.DataAccessLayer.Entities;
 using LibraryManagementSystem.DataAccessLayer.Repositories;
 using LibraryManagementSystem.WebApi.Exceptions;

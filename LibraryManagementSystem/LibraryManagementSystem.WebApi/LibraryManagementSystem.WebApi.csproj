@@ -20,7 +20,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\LibraryManagementSystem.DataAccessLayer\LibraryManagementSystem.DataAccessLayer.csproj" />
-      <ProjectReference Include="..\LibraryManagementSystem.Services.Local\LibraryManagementSystem.Services.Local.csproj" />
       <ProjectReference Include="..\LibraryManagementSystem.BusinessLogicLayer\LibraryManagementSystem.BusinessLogicLayer.csproj" />
     </ItemGroup>
 

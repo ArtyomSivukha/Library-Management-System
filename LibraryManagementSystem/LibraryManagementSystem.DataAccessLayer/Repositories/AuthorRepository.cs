@@ -1,7 +1,7 @@
 using LibraryManagementSystem.BusinessLogicLayer.Repositories;
 using Microsoft.EntityFrameworkCore;
 using LibraryManagementSystem.DataAccessLayer.Entities;
-using Model_Author = LibraryManagementSystem.BusinessLogicLayer.Models.Author;
+using ModelAuthor = LibraryManagementSystem.BusinessLogicLayer.Models.Author;
 
 namespace LibraryManagementSystem.DataAccessLayer.Repositories;
 
@@ -14,13 +14,13 @@ public class AuthorRepository : IAuthorRepository
         _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<Model_Author>> GetAllAsync()
+    public async Task<IEnumerable<ModelAuthor>> GetAllAsync()
     {
         var authorEntities = await _dbContext.Authors.Include(a => a.Books).ToArrayAsync();
         return authorEntities.Select(FromEntityToModel);
     }
 
-    public async Task<Model_Author?> GetByIdAsync(Guid id)
+    public async Task<ModelAuthor?> GetByIdAsync(Guid id)
     {
         var authorEntity = await _dbContext.Authors
             .Include(a => a.Books)
@@ -29,7 +29,7 @@ public class AuthorRepository : IAuthorRepository
         return authorEntity != null ? FromEntityToModel(authorEntity) : null;
     }
 
-    public async Task<Model_Author> CreateAsync(Model_Author author)
+    public async Task<ModelAuthor> CreateAsync(ModelAuthor author)
     {
         var authorEntity = ToEntity(author);
         _dbContext.Authors.Add(authorEntity);
@@ -39,7 +39,7 @@ public class AuthorRepository : IAuthorRepository
         return author;
     }
 
-    public async Task UpdateAsync(Model_Author author)
+    public async Task UpdateAsync(ModelAuthor author)
     {
         var authorEntity = await _dbContext.Authors
             .Include(a => a.Books)
@@ -64,7 +64,7 @@ public class AuthorRepository : IAuthorRepository
         }
     }
 
-    public async Task<IEnumerable<Model_Author>> FindByNameAsync(string name)
+    public async Task<IEnumerable<ModelAuthor>> FindByNameAsync(string name)
     {
         var authorEntities = await _dbContext.Authors
             .Include(a => a.Books)
@@ -74,7 +74,7 @@ public class AuthorRepository : IAuthorRepository
         return authorEntities.Select(FromEntityToModel);
     }
 
-    private static Author ToEntity(Model_Author author) =>
+    private static Author ToEntity(ModelAuthor author) =>
         new()
         {
             Id = author.Id,
@@ -82,7 +82,7 @@ public class AuthorRepository : IAuthorRepository
             DateOfBirth = author.DateOfBirth,
         };
 
-    private static Model_Author FromEntityToModel(Author author) =>
+    private static ModelAuthor FromEntityToModel(Author author) =>
         new()
         {
             Id = author.Id,

@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+﻿using LibraryManagementSystem.DataAccessLayer.Entities;
+using Microsoft.EntityFrameworkCore;
 
-namespace LibraryManagementSystem.DataAccessLayer.Entities;
+namespace LibraryManagementSystem.DataAccessLayer;
 
 public class LibraryDbContext : DbContext
 {
@@ -16,7 +16,6 @@ public class LibraryDbContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder
-            .UseSeeding(DbSeedData.SeedData)
-            .UseAsyncSeeding(DbSeedData.SeedDataAsync);
+            .UseSeeding(DbSeedData.SeedData);
     }
 }

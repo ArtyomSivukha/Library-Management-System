@@ -21,7 +21,7 @@ public class AuthorsController : ControllerBase
     public async Task<IActionResult> GetAllAuthorsAsync()
     {
         var authors = await _authorService.GetAllAuthorsAsync();
-        var viewModels = ViewModelMapper.ToAuthorViewModel(authors);
+        var viewModels = ViewModelMapper.ToAuthorWithBooksViewModel(authors);
         return Ok(viewModels);
     }
 
@@ -63,14 +63,6 @@ public class AuthorsController : ControllerBase
     {
         var authorsByName = await _authorService.FindAuthorsByNameAsync(name);
         var viewModels = ViewModelMapper.ToAuthorViewModel(authorsByName);
-        return Ok(viewModels);
-    }
-
-    [HttpGet("booksCount")]
-    public async Task<IActionResult> GetAllAuthorsWithBooks()
-    {
-        var authors = await _authorService.GetAllAuthorsAsync();
-        var viewModels = ViewModelMapper.ToAuthorWithBooksViewModel(authors);
         return Ok(viewModels);
     }
 }

@@ -1,5 +1,5 @@
 ﻿using LibraryManagementSystem.BusinessLogicLayer.Repositories;
-using Models_Book = LibraryManagementSystem.BusinessLogicLayer.Models.Book;
+using ModelsBook = LibraryManagementSystem.BusinessLogicLayer.Models.Book;
 
 namespace LibraryManagementSystem.BusinessLogicLayer.Services;
 
@@ -14,12 +14,12 @@ public class BookService : IBookService
         _authorRepository = authorRepository;
     }
 
-    public async Task<IEnumerable<Models_Book>> GetAllBooksAsync()
+    public async Task<IEnumerable<ModelsBook>> GetAllBooksAsync()
     {
         return await _bookRepository.GetAllAsync();
     }
 
-    public async Task<Models_Book> GetBookByIdAsync(Guid id)
+    public async Task<ModelsBook> GetBookByIdAsync(Guid id)
     {
         var book = await _bookRepository.GetByIdAsync(id);
         if (book is null)
@@ -30,7 +30,7 @@ public class BookService : IBookService
         return book;
     }
 
-    public async Task<Models_Book> CreateBookAsync(Models_Book book)
+    public async Task<ModelsBook> CreateBookAsync(ModelsBook book)
     {
         if (book is null)
         {
@@ -39,7 +39,7 @@ public class BookService : IBookService
         return await _bookRepository.CreateAsync(book);
     }
 
-    public async Task UpdateBookAsync(Models_Book book)
+    public async Task UpdateBookAsync(ModelsBook book)
     {
         if (book is null)
         {
@@ -66,7 +66,7 @@ public class BookService : IBookService
         await _bookRepository.DeleteAsync(id);
     }
 
-    public async Task<IEnumerable<Models_Book>> GetBooksPublishedAfterAsync(int year)
+    public async Task<IEnumerable<ModelsBook>> GetBooksPublishedAfterAsync(int year)
     {
         if (year < 0)
         {

@@ -1,5 +1,5 @@
 ﻿using LibraryManagementSystem.BusinessLogicLayer.Repositories;
-using Models_Author = LibraryManagementSystem.BusinessLogicLayer.Models.Author;
+using ModelsAuthor = LibraryManagementSystem.BusinessLogicLayer.Models.Author;
 
 namespace LibraryManagementSystem.BusinessLogicLayer.Services;
 
@@ -13,12 +13,12 @@ public class AuthorService : IAuthorService
         _authorRepository = authorRepository;
     }
 
-    public async Task<IEnumerable<Models_Author>> GetAllAuthorsAsync()
+    public async Task<IEnumerable<ModelsAuthor>> GetAllAuthorsAsync()
     {
         return await _authorRepository.GetAllAsync();
     }
 
-    public async Task<Models_Author> GetAuthorByIdAsync(Guid id)
+    public async Task<ModelsAuthor> GetAuthorByIdAsync(Guid id)
     {
         var author = await _authorRepository.GetByIdAsync(id);
         if (author is null)
@@ -28,7 +28,7 @@ public class AuthorService : IAuthorService
         return author;
     }
 
-    public async Task<Models_Author> CreateAuthorAsync(Models_Author author)
+    public async Task<ModelsAuthor> CreateAuthorAsync(ModelsAuthor author)
     {
         if (author is null)
         {
@@ -38,7 +38,7 @@ public class AuthorService : IAuthorService
         return await _authorRepository.CreateAsync(author);
     }
 
-    public async Task UpdateAuthorAsync(Models_Author author)
+    public async Task UpdateAuthorAsync(ModelsAuthor author)
     {
         if (author is null)
         {
@@ -58,7 +58,7 @@ public class AuthorService : IAuthorService
         await _authorRepository.DeleteAsync(id);
     }
 
-    public async Task<IEnumerable<Models_Author>> FindAuthorsByNameAsync(string name)
+    public async Task<IEnumerable<ModelsAuthor>> FindAuthorsByNameAsync(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
         {

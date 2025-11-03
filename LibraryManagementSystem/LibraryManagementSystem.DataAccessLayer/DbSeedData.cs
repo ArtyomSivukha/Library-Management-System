@@ -33,17 +33,4 @@ internal static class DbSeedData
             context.SaveChanges();
         }
     }
-    
-    public static async Task SeedDataAsync(DbContext context, bool seed, CancellationToken ct)
-    {
-        var hasAuthors = await context.Set<Author>().AnyAsync(ct);
-        if (!hasAuthors)
-        {
-            await context.Set<Author>().AddRangeAsync(_authors, ct);
-            await context.SaveChangesAsync(ct);
-            
-            await context.Set<Book>().AddRangeAsync(_books, ct);
-            await context.SaveChangesAsync(ct);
-        }
-    }
 }
