@@ -1,4 +1,5 @@
-﻿using LibraryManagementSystem.BusinessLogicLayer.Repositories;
+﻿using LibraryManagementSystem.DataAccessLayer.Entities;
+using LibraryManagementSystem.DataAccessLayer.Repositories;
 using ModelsAuthor = LibraryManagementSystem.BusinessLogicLayer.Models.Author;
 
 namespace LibraryManagementSystem.BusinessLogicLayer.Services;
@@ -15,17 +16,18 @@ public class AuthorService : IAuthorService
 
     public async Task<IEnumerable<ModelsAuthor>> GetAllAuthorsAsync()
     {
-        return await _authorRepository.GetAllAsync();
+        var authorEntities = await _authorRepository.GetAllAsync();
+        return authorEntities.Select(FromEntityToModel);
     }
 
     public async Task<ModelsAuthor> GetAuthorByIdAsync(Guid id)
     {
-        var author = await _authorRepository.GetByIdAsync(id);
-        if (author is null)
+        var authorEntity = await _authorRepository.GetByIdAsync(id);
+        if (authorEntity is null)
         {
-            throw new ArgumentNullException(nameof(author), $"{nameof(author)} is null");
+            throw new ArgumentNullException(nameof(authorEntity), $"{nameof(authorEntity)} is null");
         }
-        return author;
+        return FromEntityToModel(authorEntity);
     }
 
     public async Task<ModelsAuthor> CreateAuthorAsync(ModelsAuthor author)
@@ -35,7 +37,9 @@ public class AuthorService : IAuthorService
             throw new ArgumentNullException(nameof(author), $"{nameof(author)} is null");
         }
 
-        return await _authorRepository.CreateAsync(author);
+        var authorEntity = ToEntity(author);
+        var createdEntity = await _authorRepository.CreateAsync(authorEntity);
+        return FromEntityToModel(createdEntity);
     }
 
     public async Task UpdateAuthorAsync(ModelsAuthor author)
@@ -44,7 +48,9 @@ public class AuthorService : IAuthorService
         {
             throw new ArgumentNullException(nameof(author), $"{nameof(author)} is null");
         }
-        await _authorRepository.UpdateAsync(author);
+
+        var authorEntity = ToEntity(author);
+        await _authorRepository.UpdateAsync(authorEntity);
     }
 
     public async Task DeleteAuthorAsync(Guid id)
@@ -64,7 +70,31 @@ public class AuthorService : IAuthorService
         {
             throw new ArgumentException("The name cannot be empty");
         }
-        var authors = await _authorRepository.FindByNameAsync(name);
-        return authors;
+        
+        var authorEntities = await _authorRepository.FindByNameAsync(name);
+        return authorEntities.Select(FromEntityToModel);
     }
+
+    private static Author ToEntity(ModelsAuthor author) =>
+        new()
+        {
+            Id = author.Id,
+            Name = author.Name,
+            DateOfBirth = author.DateOfBirth
+        };
+
+    private static ModelsAuthor FromEntityToModel(Author author) =>
+        new()
+        {
+            Id = author.Id,
+            Name = author.Name,
+            DateOfBirth = author.DateOfBirth,
+            Books = author.Books?.Select(b => new Models.Book()
+            {
+                Id = b.Id,
+                Title = b.Title,
+                PublisherYear = b.PublisherYear,
+                AuthorId = author.Id
+            })
+        };
 }

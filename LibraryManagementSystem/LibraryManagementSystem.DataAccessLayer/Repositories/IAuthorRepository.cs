@@ -1,6 +1,6 @@
-using LibraryManagementSystem.BusinessLogicLayer.Models;
+using LibraryManagementSystem.DataAccessLayer.Entities;
 
-namespace LibraryManagementSystem.BusinessLogicLayer.Repositories;
+namespace LibraryManagementSystem.DataAccessLayer.Repositories;
 
 public interface IAuthorRepository
 {

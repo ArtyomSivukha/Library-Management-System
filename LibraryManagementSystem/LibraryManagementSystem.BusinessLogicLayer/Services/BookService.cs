@@ -1,4 +1,5 @@
-﻿using LibraryManagementSystem.BusinessLogicLayer.Repositories;
+﻿using LibraryManagementSystem.DataAccessLayer.Repositories;
+using LibraryManagementSystem.DataAccessLayer.Entities;
 using ModelsBook = LibraryManagementSystem.BusinessLogicLayer.Models.Book;
 
 namespace LibraryManagementSystem.BusinessLogicLayer.Services;
@@ -16,51 +17,68 @@ public class BookService : IBookService
 
     public async Task<IEnumerable<ModelsBook>> GetAllBooksAsync()
     {
-        return await _bookRepository.GetAllAsync();
+        var bookEntities = await _bookRepository.GetAllAsync();
+        return bookEntities.Select(FromEntityToModel);
     }
 
     public async Task<ModelsBook> GetBookByIdAsync(Guid id)
     {
-        var book = await _bookRepository.GetByIdAsync(id);
-        if (book is null)
+        var bookEntity = await _bookRepository.GetByIdAsync(id);
+        if (bookEntity is null)
         {
-            throw new ArgumentNullException(nameof(book), $"{nameof(book)} is null");
+            throw new ArgumentException($"Book with id {id} not found");
         }
 
-        return book;
+        return FromEntityToModel(bookEntity);
     }
 
     public async Task<ModelsBook> CreateBookAsync(ModelsBook book)
     {
         if (book is null)
         {
-            throw new ArgumentNullException(nameof(book), $"{nameof(book)} is null");
+            throw new ArgumentNullException(nameof(book));
         }
-        return await _bookRepository.CreateAsync(book);
+
+        var authorEntity = await _authorRepository.GetByIdAsync(book.AuthorId);
+        if (authorEntity is null)
+        {
+            throw new ArgumentException($"Author with id {book.AuthorId} not found");
+        }
+
+        var bookEntity = ToEntity(book, authorEntity);
+        var createdEntity = await _bookRepository.CreateAsync(bookEntity);
+        return FromEntityToModel(createdEntity);
     }
 
     public async Task UpdateBookAsync(ModelsBook book)
     {
         if (book is null)
         {
-            throw new ArgumentNullException(nameof(book), $"{nameof(book)} is null");
+            throw new ArgumentNullException(nameof(book));
         }
 
-        var author = await _authorRepository.GetByIdAsync(book.AuthorId);
-        if (author is null)
+        var existingBook = await _bookRepository.GetByIdAsync(book.Id);
+        if (existingBook is null)
         {
-            throw new ArgumentNullException($"Author with id {book.AuthorId} does not exist");
+            throw new ArgumentException($"Book with id {book.Id} not found");
         }
 
-        await _bookRepository.UpdateAsync(book);
+        var authorEntity = await _authorRepository.GetByIdAsync(book.AuthorId);
+        if (authorEntity is null)
+        {
+            throw new ArgumentException($"Author with id {book.AuthorId} not found");
+        }
+
+        var bookEntity = ToEntity(book, authorEntity);
+        await _bookRepository.UpdateAsync(bookEntity);
     }
 
     public async Task DeleteBookAsync(Guid id)
     {
-        var deleteBook = await _bookRepository.GetByIdAsync(id);
-        if (deleteBook is null)
+        var book = await _bookRepository.GetByIdAsync(id);
+        if (book is null)
         {
-            throw new ArgumentNullException(nameof(deleteBook), $"{nameof(deleteBook)} is null");
+            throw new ArgumentException($"Book with id {id} not found");
         }
 
         await _bookRepository.DeleteAsync(id);
@@ -70,9 +88,34 @@ public class BookService : IBookService
     {
         if (year < 0)
         {
-            throw new ArgumentException("Incorrect year");
+            throw new ArgumentException("Year cannot be negative");
         }
 
-        return await _bookRepository.GetBooksPublishedAfterAsync(year);
+        var bookEntities = await _bookRepository.GetBooksPublishedAfterAsync(year);
+        return bookEntities.Select(FromEntityToModel);
     }
+    
+    private static Book ToEntity(ModelsBook model, Author author)
+    {
+        return new Book
+        {
+            Id = model.Id,
+            Title = model.Title,
+            PublisherYear = model.PublisherYear,
+            Author = author
+        };
+    }
+
+    private static ModelsBook FromEntityToModel(Book book)
+    {
+        return new ModelsBook
+        {
+            Id = book.Id,
+            Title = book.Title,
+            PublisherYear = book.PublisherYear,
+            AuthorId = book.Author.Id
+        };
+    }
+
+
 }

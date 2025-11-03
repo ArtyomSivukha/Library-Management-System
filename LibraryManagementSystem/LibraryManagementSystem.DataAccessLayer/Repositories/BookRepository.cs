@@ -1,7 +1,5 @@
-using LibraryManagementSystem.BusinessLogicLayer.Repositories;
 using LibraryManagementSystem.DataAccessLayer.Entities;
 using Microsoft.EntityFrameworkCore;
-using ModelBook = LibraryManagementSystem.BusinessLogicLayer.Models.Book;
 
 namespace LibraryManagementSystem.DataAccessLayer.Repositories;
 
@@ -14,45 +12,38 @@ public class BookRepository : IBookRepository
         _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<ModelBook>> GetAllAsync()
+    public async Task<IEnumerable<Book>?> GetAllAsync()
     {
-        var bookEntities = await _dbContext.Books
+        return await _dbContext.Books
             .Include(b => b.Author)
             .ToArrayAsync();
-
-        return bookEntities.Select(FromEntityToModel);
     }
 
-    public async Task<ModelBook?> GetByIdAsync(Guid id)
+    public async Task<Book?> GetByIdAsync(Guid id)
     {
-        var bookEntity = await _dbContext.Books
+        return await _dbContext.Books
             .Include(b => b.Author)
             .FirstOrDefaultAsync(b => b.Id == id);
-
-        return bookEntity != null ? FromEntityToModel(bookEntity) : null;
     }
 
-    public async Task<ModelBook> CreateAsync(ModelBook book)
+    public async Task<Book> CreateAsync(Book book)
     {
         var authorEntity = await _dbContext.Authors
-            .FirstOrDefaultAsync(a => a.Id == book.AuthorId);
+            .FirstOrDefaultAsync(a => a.Id == book.Author.Id);
 
         if (authorEntity is null)
         {
-            throw new ArgumentNullException($"Author with id {book.AuthorId} does not exist");
+            throw new ArgumentNullException($"Author with id {book.Author.Id} does not exist");
         }
 
-        var bookEntity = ToEntity(book);
-        bookEntity.Author = authorEntity;
-
-        _dbContext.Books.Add(bookEntity);
+        book.Author = authorEntity;
+        _dbContext.Books.Add(book);
         await _dbContext.SaveChangesAsync();
 
-        book.Id = bookEntity.Id;
         return book;
     }
 
-    public async Task UpdateAsync(ModelBook book)
+    public async Task UpdateAsync(Book book)
     {
         var bookToUpdate = await _dbContext.Books
             .FirstOrDefaultAsync(a => a.Id == book.Id);
@@ -62,7 +53,7 @@ public class BookRepository : IBookRepository
             throw new ArgumentNullException(nameof(bookToUpdate), $"{nameof(bookToUpdate)} is null");
         }
 
-        var author = await _dbContext.Authors.FirstAsync(a => a.Id == book.AuthorId);
+        var author = await _dbContext.Authors.FirstAsync(a => a.Id == book.Author.Id);
 
         bookToUpdate.Title = book.Title;
         bookToUpdate.PublisherYear = book.PublisherYear;
@@ -80,30 +71,11 @@ public class BookRepository : IBookRepository
         }
     }
 
-    public async Task<IEnumerable<ModelBook>> GetBooksPublishedAfterAsync(int year)
+    public async Task<IEnumerable<Book>?> GetBooksPublishedAfterAsync(int year)
     {
-        var bookEntities = await _dbContext.Books
+        return await _dbContext.Books
             .Include(b => b.Author)
             .Where(b => b.PublisherYear > year)
             .ToArrayAsync();
-
-        return bookEntities.Select(FromEntityToModel);
     }
-
-    private static Book ToEntity(ModelBook book) =>
-        new()
-        {
-            Id = book.Id,
-            Title = book.Title,
-            PublisherYear = book.PublisherYear
-        };
-
-    private static ModelBook FromEntityToModel(Book book) =>
-        new()
-        {
-            Id = book.Id,
-            Title = book.Title,
-            PublisherYear = book.PublisherYear,
-            AuthorId = book.Author.Id
-        };
 }

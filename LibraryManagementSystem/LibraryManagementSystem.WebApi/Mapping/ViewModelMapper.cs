@@ -63,7 +63,7 @@ public static class ViewModelMapper
         return businessModels.Select(ToAuthorViewModel);
     }
 
-    public static IEnumerable<BookViewModel> ToBookViewModel(IEnumerable<Book> businessModels)
+    public static IEnumerable<BookViewModel> ToBookViewModel(IEnumerable<Book>? businessModels)
     {
         return businessModels.Select(ToBookViewModel);
     }
